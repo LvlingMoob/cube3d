@@ -1,0 +1,1 @@
+clang srcs/main.c -I/usr/include -Iheaders -Imlx_linux -O3 -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o cube
