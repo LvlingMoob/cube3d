@@ -11,6 +11,17 @@ void	first_carac_checker(t_fd_read *fdres, int i)
 		free_and_quit(fdres);
 }
 
+void	last_carac_checker(t_fd_read *fdres, int i, int j)
+{
+	int	k;
+
+	k = 0;
+	while (j - k >= 0 && (fdres->map[i][j - k] > 0 && fdres->map[i][j - k] <= 32))
+		k++;
+	if (fdres->map[i][j - k] != '1')
+		free_and_quit(fdres);
+}
+
 void	map_scanning(t_fd_read *fdres, int i, int j)
 {
 	if (fdres->map[i][j] != '1' && fdres->map[i][j] != 32
@@ -40,17 +51,6 @@ void	space_checker(t_fd_read *fdres, int i, int j)
 		free_and_quit(fdres);
 }
 
-void	last_carac_checker(t_fd_read *fdres, int i, int j)
-{
-	int	k;
-
-	k = 0;
-	while (j - k >= 0 && (fdres->map[i][j - k] > 0 && fdres->map[i][j - k] <= 32))
-		k++;
-	if (fdres->map[i][j - k] != '1')
-		free_and_quit(fdres);
-}
-
 void	first_last_line_checker(t_fd_read *fdres, int i)
 {
 	int	j;
@@ -63,6 +63,7 @@ void	first_last_line_checker(t_fd_read *fdres, int i)
 		j++;
 	}
 }
+
 void	map_checker(t_fd_read *fdres)
 {
 	int	i;
