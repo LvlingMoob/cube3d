@@ -24,9 +24,24 @@ enum e_type
 	GET
 };
 
+typedef struct	s_plyer
+{
+	int		x;
+	int		y;
+	float	orientation;
+}				t_plyer;
+
 typedef struct s_vars {
 	void	*mlx;
 	void	*win;
+	t_plyer	*plyer;
+	char	**map;
+	int		fd_no;
+	int		fd_so;
+	int		fd_we;
+	int		fd_ea;
+	int		floor[3];
+	int		ceiling[3];
 }				t_vars;
 
 typedef struct s_data {
@@ -52,45 +67,27 @@ typedef struct s_fd_read
 typedef struct s_lst_check
 {
 	int		index;
-	int	(*func)(t_fd_read *fdres, char *line, int l);
+	int		(*func)(t_fd_read *fdres, char *line, int l, int to_value);
+	int		to_value;
 }				t_lst_check;
 
 
 
-int		key_hook(int key, t_vars *var);
-int		close_img_win(t_vars *var);
 
+void	file_handler(t_fd_read *fdres, char *file_name);
 
-void	parse_cub(t_fd_read *fdres, char *file);
-void	map_checker(t_fd_read *fdres);
-
-// free stuff
 void	free_and_quit(t_fd_read *fdres);
 void	ft_free_char_array(char **char_array);
 
-// globals
-int		pos_player(int status);
 
-// checker
-int	final_check_c(t_fd_read *fdres, char *line, int l);
-int	final_check_f(t_fd_read *fdres, char *line, int l);
-int	final_check_ea(t_fd_read *fdres, char *line, int l);
-int	final_check_we(t_fd_read *fdres, char *line, int l);
-int	final_check_so(t_fd_read *fdres, char *line, int l);
-int	final_check_no(t_fd_read *fdres, char *line, int l);
-int	digit_value_checker(t_fd_read *fdres, char *values, int l);
-void	end_line_checker(t_fd_read *fdres, char *line, int l);
-int	start_line_checker(t_fd_read *fdres, char *line, int *j, int l);
+void	err_print(t_fd_read *fdres, char *expected_value, int l);
+int		end_line_checker(char *line, int l);
+int		start_line_checker(char *line, int *j, int l);
+int		init_i(char *line, int start);
+
+
+int	fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
+
 void	map_checker(t_fd_read *fdres);
-
-//utils
-void	initfdres(t_fd_read *fdres);
-char	*str_char_cat(char *buf, char c);
-int		empty_line(char *line);
-void	fear_the_non_printable(t_fd_read *fdres);
-int		wrong_char_in_map(char c);
-
-//params reader
-char	*params_reader(t_fd_read *fdres, int fd, int *line);
 
 #endif

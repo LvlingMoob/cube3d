@@ -1,17 +1,5 @@
 #include "cube.h"
 
-int	close_img_win(t_vars *var)
-{
-	mlx_destroy_window(var->mlx, var->win);
-	exit(0);
-}
-
-int	key_hook(int key, t_vars *var)
-{
-	if (key == 65307)
-		close_img_win(var);
-	return (0);
-}
 void	ft_free_char_array(char **char_array)
 {
 	int		i;
