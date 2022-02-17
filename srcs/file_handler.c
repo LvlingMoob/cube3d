@@ -1,38 +1,5 @@
 #include "cube.h"
 
-int	empty_line(char *line)
-{
-	while (*line)
-	{
-		if (!(*line > 0 && *line <= 32))
-			return (0);
-		line++;
-	}
-	return (1);
-}
-
-void	cp_char_array(char ***dest, char **src)
-{
-	int	i;
-	int	empty;
-
-	i = 0;
-	empty = 0;
-	while (empty_line(src[empty]))
-		empty++;
-	while (src[empty + i])
-		i++;
-	(*dest) = ft_calloc(i + 1, sizeof(char *));
-	i = 0;
-	while (src[empty + i])
-	{
-		if (empty_line(src[empty +i]))
-			return ;
-		(*dest)[i] = ft_strdup(src[empty + i]);
-		i++;
-	}
-}
-
 void	file_checker(t_fd_read *fdres, char **file_content, int i, int l)
 {
 	int		j;
@@ -50,7 +17,8 @@ void	file_checker(t_fd_read *fdres, char **file_content, int i, int l)
 		}
 		while (content[i][j] && content[i][j] > 0 && content[i][j] <= 32)
 			j++;
-		if (!(ft_strncmp(fdres->values[l], &content[i][j], ft_strlen(fdres->values[l]))))
+		if (!(ft_strncmp(fdres->values[l], &content[i][j],
+			ft_strlen(fdres->values[l]))))
 		{
 			if (!fill_texture_address_fdres(fdres, content[i], l, i))
 			{
@@ -128,4 +96,9 @@ void	file_handler(t_fd_read *fdres, char *file_name)
 	}
 	file_checker(fdres, &file_content, 0, 0);
 	map_checker(fdres);
+	if (!player_set(GET))
+	{
+		write(2, "Error : no player set\n", 22);
+		free_and_quit(fdres);
+	}
 }

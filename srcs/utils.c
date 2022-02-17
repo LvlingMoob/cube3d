@@ -1,19 +1,65 @@
 #include "cube.h"
 
-// int	authorized_char(char c)
-// {
-// 	static int	plyer_set = 0;
+int	player_set(int status)
+{
+	static int	set = 0;
 
-// 	if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
-// 	{
-// 		if (!plyer_set)
-// 			plyer_set = 1;
-// 		else
-// 			return (0);
-// 	}
-// 	return (c == '0' || c == '1'  || c == '\n' || c == 32
-// 		|| c == 'N' || c == 'S' || c == 'E' || c == 'W');
-// }
+	if (status == SET)
+		set = 1;
+	return (set);
+} 
+
+int	authorized_char(char c)
+{
+	static int	plyer_set = 0;
+
+	if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
+	{
+		player_set(SET);
+		if (!plyer_set)
+			plyer_set = 1;
+		else
+		{
+			write(2, "Error : 2 players detected\n", 28);
+			return (0);
+		}
+	}
+	return (c == '0' || c == '1'  || c == '\n' || c == 32
+		|| c == 'N' || c == 'S' || c == 'E' || c == 'W');
+}
+
+int	empty_line(char *line)
+{
+	while (*line)
+	{
+		if (!(*line > 0 && *line <= 32))
+			return (0);
+		line++;
+	}
+	return (1);
+}
+
+void	cp_char_array(char ***dest, char **src)
+{
+	int	i;
+	int	empty;
+
+	i = 0;
+	empty = 0;
+	while (empty_line(src[empty]))
+		empty++;
+	while (src[empty + i])
+		i++;
+	(*dest) = ft_calloc(i + 1, sizeof(char *));
+	i = 0;
+	while (src[empty + i])
+	{
+		if (empty_line(src[empty +i]))
+			return ;
+		(*dest)[i] = ft_strdup(src[empty + i]);
+		i++;
+	}
+}
 
 int	init_i(char *line, int start)
 {

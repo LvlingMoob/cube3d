@@ -31,10 +31,19 @@ typedef struct	s_plyer
 	float	orientation;
 }				t_plyer;
 
+typedef struct s_data {
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}				t_data;
+
 typedef struct s_vars {
 	void	*mlx;
 	void	*win;
 	t_plyer	*plyer;
+	t_data	*img;
 	char	**map;
 	int		fd_no;
 	int		fd_so;
@@ -43,14 +52,6 @@ typedef struct s_vars {
 	int		floor[3];
 	int		ceiling[3];
 }				t_vars;
-
-typedef struct s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}				t_data;
 
 typedef struct s_fd_read
 {
@@ -78,16 +79,30 @@ void	file_handler(t_fd_read *fdres, char *file_name);
 
 void	free_and_quit(t_fd_read *fdres);
 void	ft_free_char_array(char **char_array);
+void	free_and_stay(t_fd_read *fdres);
+void	free_var(t_vars *var);
 
 
 void	err_print(t_fd_read *fdres, char *expected_value, int l);
 int		end_line_checker(char *line, int l);
 int		start_line_checker(char *line, int *j, int l);
 int		init_i(char *line, int start);
+void	cp_char_array(char ***dest, char **src);
+int		empty_line(char *line);
+int		authorized_char(char c);
+char	*str_char_cat(char *buf, char c);
+int		player_set(int status);
 
 
-int	fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
+int		fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
 
 void	map_checker(t_fd_read *fdres);
+
+
+void	first_last_line_checker(t_fd_read *fdres, int i);
+void	space_checker(t_fd_read *fdres, int i, int j);
+void	map_scanning(t_fd_read *fdres, int i, int j);
+void	last_carac_checker(t_fd_read *fdres, int i, int j);
+void	first_carac_checker(t_fd_read *fdres, int i);
 
 #endif

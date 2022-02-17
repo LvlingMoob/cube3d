@@ -19,6 +19,7 @@ SRCS		=	${SRCFILE}main.c\
 				${SRCFILE}file_handler.c\
 				${SRCFILE}texture_checker.c\
 				${SRCFILE}map_checker.c\
+				${SRCFILE}ft_check.c\
 				${SRCFILE}free.c\
 				${SRCFILE}utils.c\
 

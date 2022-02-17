@@ -99,6 +99,6 @@ int	fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l)
 		{4, &final_check_floor_ceiling, F},
 		{5, &final_check_floor_ceiling, C}
 	};
-    
+
 	return (checker[i].func(fdres, line, l, checker[i].to_value));
 }
