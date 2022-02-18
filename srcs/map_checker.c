@@ -10,7 +10,6 @@ void	map_checker(t_fd_read *fdres)
 	while (fdres->map[i])
 	{
 		j = 0;
-		printf("-->%s\n", fdres->map[i]);
 		first_carac_checker(fdres, i);
 		if (i == 0 || (fdres->map[i] && !fdres->map[i + 1]))
 			first_last_line_checker(fdres, i);

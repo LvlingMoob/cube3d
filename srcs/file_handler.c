@@ -23,7 +23,7 @@ void	file_checker(t_fd_read *fdres, char **file_content, int i, int l)
 			if (!fill_texture_address_fdres(fdres, content[i], l, i))
 			{
 				ft_free_char_array(content);
-				free_and_quit(fdres);
+				free_and_quit(fdres, 1);
 			}
 			l++;
 		}
@@ -92,13 +92,13 @@ void	file_handler(t_fd_read *fdres, char *file_name)
 	if (!content_rewrite(&file_content))
 	{
 		free(file_content);
-		free_and_quit(fdres);
+		free_and_quit(fdres, 1);
 	}
 	file_checker(fdres, &file_content, 0, 0);
 	map_checker(fdres);
 	if (!player_set(GET))
 	{
 		write(2, "Error : no player set\n", 22);
-		free_and_quit(fdres);
+		free_and_quit(fdres, 1);
 	}
 }

@@ -11,18 +11,31 @@
 # include <string.h>
 # include "../libft/libft.h"
 # include <mlx.h>
+# include <math.h>
 
 enum e_type
 {
-	NO,
+	NO = 1,
 	SO,
 	WE,
 	EA,
 	F,
 	C,
 	SET,
-	GET
+	GET,
+	RIGHT,
+	LEFT,
+	UP,
+	DOWN
 };
+
+typedef struct	s_ray
+{
+	int		x;
+	int		y;
+	int		len;
+	float	angle;
+}				t_ray;
 
 typedef struct	s_plyer
 {
@@ -44,7 +57,9 @@ typedef struct s_vars {
 	void	*win;
 	t_plyer	*plyer;
 	t_data	*img;
+	float	*cast_len;
 	char	**map;
+	int		scale;
 	int		fd_no;
 	int		fd_so;
 	int		fd_we;
@@ -72,15 +87,15 @@ typedef struct s_lst_check
 	int		to_value;
 }				t_lst_check;
 
-
-
+# define PI 3.1415926535
+# define S_WIDTH 800
+# define S_HEIGHT 600
 
 void	file_handler(t_fd_read *fdres, char *file_name);
 
-void	free_and_quit(t_fd_read *fdres);
+void	free_and_quit(t_fd_read *fdres, int quit);
 void	ft_free_char_array(char **char_array);
-void	free_and_stay(t_fd_read *fdres);
-void	free_var(t_vars *var);
+int		close_img_win(t_vars *var);
 
 
 void	err_print(t_fd_read *fdres, char *expected_value, int l);
@@ -104,5 +119,12 @@ void	space_checker(t_fd_read *fdres, int i, int j);
 void	map_scanning(t_fd_read *fdres, int i, int j);
 void	last_carac_checker(t_fd_read *fdres, int i, int j);
 void	first_carac_checker(t_fd_read *fdres, int i);
+
+void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult);
+void	cp_char_array_multiply(char ***dest, char **src, int mult);
+void	initfdres(t_fd_read *fdres);
+
+int		key_press(int key, t_vars *var);
+int		render_next_frame(t_vars *var);
 
 #endif

@@ -126,5 +126,5 @@ void	err_print(t_fd_read *fdres, char *expected_value, int l)
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(expected_value, 2);
 	ft_putstr_fd(" expected\n", 2);
-	free_and_quit(fdres);
+	free_and_quit(fdres, 1);
 }
