@@ -26,7 +26,9 @@ enum e_type
 	RIGHT,
 	LEFT,
 	UP,
-	DOWN
+	DOWN,
+	VERT,
+	HOR
 };
 
 typedef struct	s_ray
@@ -59,6 +61,7 @@ typedef struct s_vars {
 	t_data	*img;
 	float	*cast_len;
 	char	**map;
+	char	**origin;
 	int		scale;
 	int		fd_no;
 	int		fd_so;

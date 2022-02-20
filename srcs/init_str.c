@@ -65,6 +65,7 @@ void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
 
 	i = 0;
 	cp_char_array_multiply(&var->map, fdres->map, mult);
+	cp_char_array(&var->origin, fdres->map);
 	var->plyer = ft_calloc(1, sizeof(t_plyer));
 	while (fdres->map[i])
 	{

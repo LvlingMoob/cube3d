@@ -22,44 +22,124 @@ void	draw_map(t_vars *var)
 
 void	draw_vector(t_vars *var, int index, int vect)
 {
-	float	start_x;
-	float	start_y;
-	float	end_x;
-	float	end_y;
+	int		dof;
+	float	rx;
+	float	ry;
+	float	xo;
+	float	yo;
 
-	start_x = var->plyer->x + 0.5;
-	start_x = var->plyer->y + 0.5;
-	end_x = var->plyer->x;
-	end_y = var->plyer->y;
-	while (var->map[(int)ceil(end_x)][(int)ceil(end_y)] != '1'
-		&& (sqrt((end_x * end_x) + (end_y * end_y))) > 50)
+	dof = 0;
+	xo = cos((var->plyer->orientation + vect) * (M_PI / 180.0));
+	yo = sin((var->plyer->orientation + vect) * (M_PI / 180.0));
+	rx = var->plyer->x + xo;
+	ry = var->plyer->y + yo;
+	while (var->map[(int)rx][(int)ry] != '1')
 	{
-		end_x += cos((var->plyer->orientation + vect) * (M_PI / 180.0));
-		end_y += sin((var->plyer->orientation + vect) * (M_PI / 180.0));
-		if (var->map[(int)ceil(end_x)][(int)ceil(end_y)] != '1')
-			my_mlx_pixel_put(var->img, (int)ceil(end_y), (int)ceil(end_x), 0x00FF0000);
+		rx += xo;
+		ry += yo;
+		dof += 1;
+		if (var->map[(int)rx][(int)ry] != '1')
+			my_mlx_pixel_put(var->img, (int)ry, (int)rx, 0x00FF0000);
 	}
-	var->cast_len[index] = sqrt((end_x * end_x) + (end_y * end_y));
+	float x_dist = rx - var->plyer->x;
+	float y_dist = ry - var->plyer->y;
+	if (x_dist < 0)
+		x_dist *= -1;
+	if (y_dist < 0)
+		y_dist *= -1;
+	var->cast_len[index] = sqrt((x_dist * x_dist) + (y_dist * y_dist));
+}
+
+int	create_trgb(int t, int r, int g, int b)
+{
+	if (t > 255)
+		t = 255;
+	if (t < 0)
+		t = 0;
+	if (r > 255)
+		r = 255;
+	if (r < 0)
+		r = 0;
+	if (g > 255)
+		g = 255;
+	if (g < 0)
+		g = 0;
+	if (b > 255)
+		b = 255;
+	if (b < 0)
+		b = 0;
+	return (t << 24 | r << 16 | g << 8 | b);
+}
+
+void	draw_wall(t_vars *var, int index, int vect)
+{
+	float	lineH;
+	float	lineO;
+	float	distT;
+
+	distT = var->cast_len[index] * cos((var->plyer->orientation - (var->plyer->orientation + vect)) * (M_PI / 180.0));
+	lineH = (16 * 100) / distT;
+	lineO = 400 - lineH;
+	if (lineH > 800)
+		lineH = 800;
+	int start = lineO / 2;
+	int k = 0;
+	while (k < start && lineH < 800)
+	{
+		for (int i = 0; i < 10; i++)
+			my_mlx_pixel_put(var->img, 800 - (index * 10) + i, k, 0x000000FF);
+		k++;
+	}
+	int j = start;
+	int l = 600 - start;
+	while (j < l)
+	{
+		for (int i = 0; i < 10; i++)
+			my_mlx_pixel_put(var->img, 800 - (index * 10) + i, j, create_trgb(255, 255 * 10 * (1 / distT), 255 * 10 * (1 / distT), 255 * 10 * (1 / distT)));
+		j++;
+	}
+	while (j < 600 && lineH < 800)
+	{
+		for (int i = 0; i < 10; i++)
+			my_mlx_pixel_put(var->img, 800 - (index * 10) + i, j, 0x000000FF);
+		j++;	
+	}
 }
 
 int	render_next_frame(t_vars *var)
 {
 	int index;
-	int	vect;
+	float	vect;
 
-	index = 0;
-	vect = -30;
 	for (int i = 0; i < S_WIDTH; i++)
 	{
 		for (int j = 0; j < S_HEIGHT; j++)
 			my_mlx_pixel_put(var->img, i, j, 0x00000000);
 	}
-	draw_map(var);
-	while (index < 60)
+	index = 0;
+	vect = -30;
+	while (index < 80)
 	{
 		draw_vector(var, index, vect);
 		index++;
-		vect++;
+		vect += 0.5;
+	}
+	index = 0;
+	vect = -30;
+	while (index < 80)
+	{
+		draw_wall(var, index, vect);
+		index++;
+		vect += 0.5;
+	}
+	index = 0;
+	vect = -30;
+	draw_map(var);
+	while (index < 80)
+	{
+		draw_vector(var, index, vect);
+		index++;
+		vect += 0.5;
 	}
 	my_mlx_pixel_put(var->img, var->plyer->y, var->plyer->x, 0x00FFFFFF);
 	my_mlx_pixel_put(var->img, var->plyer->y + 1, var->plyer->x, 0x00FFFFFF);
