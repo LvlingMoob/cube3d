@@ -28,7 +28,9 @@ enum e_type
 	UP,
 	DOWN,
 	VERT,
-	HOR
+	HOR,
+	PLUS,
+	MINUS
 };
 
 typedef struct	s_ray
@@ -129,5 +131,11 @@ void	initfdres(t_fd_read *fdres);
 
 int		key_press(int key, t_vars *var);
 int		render_next_frame(t_vars *var);
+
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void	draw_map(t_vars *var);
+void	ray_cast(t_vars *var, int index, int vect);
+void	draw_vector(t_vars *var, int index, int vect);
+
 
 #endif

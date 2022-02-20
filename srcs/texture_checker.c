@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   texture_checker.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mberengu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/20 19:28:56 by mberengu          #+#    #+#             */
+/*   Updated: 2022/02/20 19:28:57 by mberengu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cube.h"
 
 int	digit_value_checker(char *values)
@@ -34,7 +46,7 @@ int	final_check_walls(t_fd_read *fdres, char *line, int l, int to_value)
 	if (to_value == NO)
 		fdres->no = ft_strdup(&line[strstart + j]);
 	else if (to_value == SO)
-		fdres-> so = ft_strdup(&line[strstart + j]);
+		fdres->so = ft_strdup(&line[strstart + j]);
 	else if (to_value == WE)
 		fdres->we = ft_strdup(&line[strstart + j]);
 	else if (to_value == EA)
@@ -78,12 +90,12 @@ int	final_check_floor_ceiling(t_fd_read *fdres, char *line, int l, int to_value)
 		return (0);
 	if (to_value == F)
 	{
-		fdres-> f = ft_strdup(&line[strstart + j]);
+		fdres->f = ft_strdup(&line[strstart + j]);
 		return (floor_ceiling_digits_value_verif(fdres, l, to_value));
 	}
 	else if (to_value == C)
 	{
-		fdres-> c = ft_strdup(&line[strstart + j]);
+		fdres->c = ft_strdup(&line[strstart + j]);
 		return (floor_ceiling_digits_value_verif(fdres, l, to_value));
 	}
 	return (0);
@@ -92,12 +104,12 @@ int	final_check_floor_ceiling(t_fd_read *fdres, char *line, int l, int to_value)
 int	fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l)
 {
 	static t_lst_check	checker[6] = {
-		{0, &final_check_walls, NO},
-		{1, &final_check_walls, SO},
-		{2, &final_check_walls, WE},
-		{3, &final_check_walls, EA},
-		{4, &final_check_floor_ceiling, F},
-		{5, &final_check_floor_ceiling, C}
+	{0, &final_check_walls, NO},
+	{1, &final_check_walls, SO},
+	{2, &final_check_walls, WE},
+	{3, &final_check_walls, EA},
+	{4, &final_check_floor_ceiling, F},
+	{5, &final_check_floor_ceiling, C}
 	};
 
 	return (checker[i].func(fdres, line, l, checker[i].to_value));

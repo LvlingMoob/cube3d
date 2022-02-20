@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   file_handler.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mberengu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/20 19:27:47 by mberengu          #+#    #+#             */
+/*   Updated: 2022/02/20 19:27:49 by mberengu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cube.h"
 
 void	file_checker(t_fd_read *fdres, char **file_content, int i, int l)
@@ -18,7 +30,7 @@ void	file_checker(t_fd_read *fdres, char **file_content, int i, int l)
 		while (content[i][j] && content[i][j] > 0 && content[i][j] <= 32)
 			j++;
 		if (!(ft_strncmp(fdres->values[l], &content[i][j],
-			ft_strlen(fdres->values[l]))))
+				ft_strlen(fdres->values[l]))))
 		{
 			if (!fill_texture_address_fdres(fdres, content[i], l, i))
 			{
@@ -73,7 +85,7 @@ int	content_rewrite(char **file_content)
 	return (1);
 }
 
-void	file_handler(t_fd_read *fdres, char *file_name)
+char	*open_and_read(char *file_name)
 {
 	int		fd;
 	char	c;
@@ -89,6 +101,14 @@ void	file_handler(t_fd_read *fdres, char *file_name)
 	while (read(fd, &c, 1) > 0)
 		file_content = str_char_cat(file_content, c);
 	close(fd);
+	return (file_content);
+}
+
+void	file_handler(t_fd_read *fdres, char *file_name)
+{
+	char	*file_content;
+
+	file_content = open_and_read(file_name);
 	if (!content_rewrite(&file_content))
 	{
 		free(file_content);
