@@ -54,10 +54,12 @@ int	empty_line(char *line)
 void	cp_char_array(char ***dest, char **src)
 {
 	int	i;
+	int	size;
 	int	empty;
 
 	i = 0;
 	empty = 0;
+	size = 0;
 	while (empty_line(src[empty]))
 		empty++;
 	while (src[empty + i])
@@ -70,6 +72,7 @@ void	cp_char_array(char ***dest, char **src)
 			return ;
 		(*dest)[i] = ft_strdup(src[empty + i]);
 		i++;
+		size++;
 	}
 }
 

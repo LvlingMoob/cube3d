@@ -30,50 +30,6 @@ void	initfdres(t_fd_read *fdres)
 	fdres->map = NULL;
 }
 
-void	multiply_row(char ***dest, char **tmp, int mult)
-{
-	static int	i = 0;
-	int			j;
-
-	j = 0;
-	while (j < mult)
-	{
-		(*dest)[i] = ft_strdup(*tmp);
-		j++;
-		i++;
-	}
-	free(*tmp);
-}
-
-void	cp_char_array_multiply(char ***dest, char **src, int mult)
-{
-	int		i;
-	int		j;
-	int		l;
-	char	*tmp;
-
-	i = 0;
-	while (src[i])
-		i++;
-	(*dest) = ft_calloc((i * mult) + 1, sizeof(char *));
-	i = 0;
-	while (src[i])
-	{
-		j = 0;
-		tmp = ft_calloc(1, sizeof(char));
-		l = 0;
-		while (src[i][j])
-		{
-			tmp = str_char_cat(tmp, src[i][j]);
-			l++;
-			if (!(l % mult))
-				j++;
-		}
-		multiply_row(dest, &tmp, mult);
-		i++;
-	}
-}
-
 void	get_start_orientation(t_vars *var, char c)
 {
 	if (c == 'N')
@@ -84,6 +40,8 @@ void	get_start_orientation(t_vars *var, char c)
 		var->plyer->orientation = 270;
 	else if (c == 'E')
 		var->plyer->orientation = 90;
+	var->plyer->pdx = cos(var->plyer->orientation * (M_PI / 180));
+	var->plyer->pdy = sin(var->plyer->orientation * (M_PI / 180));
 }
 
 void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
@@ -92,10 +50,8 @@ void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
 	int	j;
 
 	i = 0;
-	cp_char_array_multiply(&var->map, fdres->map, mult);
-	cp_char_array(&var->origin, fdres->map);
 	var->plyer = ft_calloc(1, sizeof(t_plyer));
-	var->cast_len = ft_calloc(80, sizeof(float));
+	var->cast_len = ft_calloc(S_WIDTH, sizeof(int));
 	while (fdres->map[i])
 	{
 		j = 0;
@@ -104,12 +60,16 @@ void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
 			if (fdres->map[i][j] == 'N' || fdres->map[i][j] == 'S'
 				|| fdres->map[i][j] == 'W' || fdres->map[i][j] == 'E')
 			{
-				var->plyer->x = (i * mult) - (mult / 2);
-				var->plyer->y = (j * mult) - (mult / 2);
+				var->plyer->x = i + 0.5;
+				var->plyer->y = j + 0.5;
 				get_start_orientation(var, fdres->map[i][j]);
+				fdres->map[i][j] = '0';
 			}
 			j++;
 		}
 		i++;
 	}
+	cp_char_array(&var->map, fdres->map);
+	var->planeX = 0.0;
+	var->planeY = 0.66;
 }

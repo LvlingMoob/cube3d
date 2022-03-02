@@ -16,7 +16,7 @@ int	close_img_win(t_vars *var)
 {
 	mlx_destroy_image(var->mlx, var->img->img);
 	mlx_destroy_window(var->mlx, var->win);
-//	mlx_destroy_display(var->mlx);
+	mlx_destroy_display(var->mlx);
 	free(var->mlx);
 	free(var->plyer);
 	free(var->cast_len);

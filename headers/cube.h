@@ -43,8 +43,10 @@ typedef struct	s_ray
 
 typedef struct	s_plyer
 {
-	int		x;
-	int		y;
+	float	x;
+	float	pdx;
+	float	y;
+	float	pdy;
 	float	orientation;
 }				t_plyer;
 
@@ -63,7 +65,6 @@ typedef struct s_vars {
 	t_data	*img;
 	float	*cast_len;
 	char	**map;
-	char	**origin;
 	int		scale;
 	int		fd_no;
 	int		fd_so;
@@ -71,6 +72,10 @@ typedef struct s_vars {
 	int		fd_ea;
 	int		floor[3];
 	int		ceiling[3];
+	double	dirX;
+	double	dirY;
+	double	planeX;
+	double	planeY;
 }				t_vars;
 
 typedef struct s_fd_read
@@ -93,8 +98,13 @@ typedef struct s_lst_check
 }				t_lst_check;
 
 # define PI 3.1415926535
-# define S_WIDTH 800
-# define S_HEIGHT 600
+# define S_WIDTH 1200.0
+# define S_HEIGHT 700.0
+# define SHIFT 60.0 / S_WIDTH
+# define CAM_SHIFT 2.0 / S_WIDTH
+# define P2 M_PI / 2
+# define P3 3 * M_PI / 2
+# define MAPS 64
 
 void	file_handler(t_fd_read *fdres, char *file_name);
 
@@ -137,5 +147,7 @@ void	draw_map(t_vars *var);
 void	ray_cast(t_vars *var, int index, int vect);
 void	draw_vector(t_vars *var, int index, int vect);
 
+int		max_height(int status, int value);
+int		max_width(int status, int value);
 
 #endif

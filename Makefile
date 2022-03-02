@@ -11,7 +11,7 @@ RM			= rm -f
 #FLAGS		= -Wall -Werror -Wextra -I/usr/include -Iheaders -Imlx_linux -O3 -c
 FLAGS		= -I/usr/include -Iheaders -Imlx_linux -O3 -c
 
-FLAGSSUP	= -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz 
+FLAGSSUP	= -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 SRCFILE		=	./srcs/
 
@@ -22,6 +22,7 @@ SRCS		=	${SRCFILE}main.c\
 				${SRCFILE}init_str.c\
 				${SRCFILE}ft_minilibx.c\
 				${SRCFILE}ft_check.c\
+				${SRCFILE}render.c\
 				${SRCFILE}free.c\
 				${SRCFILE}utils.c\
 

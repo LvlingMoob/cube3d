@@ -20,142 +20,46 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	draw_map(t_vars *var)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (var->map[i])
-	{
-		j = 0;
-		while (var->map[i][j])
-		{
-			if (var->map[i][j] == '1')
-				my_mlx_pixel_put(var->img, j, i, 0x00FFFFFF);
-			j++;
-		}
-		i++;
-	}
-}
-
-void	get_distance(t_vars *var, int index, float rx, float ry)
-{
-	float	x_dist;
-	float	y_dist;
-
-	x_dist = rx - var->plyer->x;
-	y_dist = ry - var->plyer->y;
-	if (x_dist < 0)
-		x_dist *= -1;
-	if (y_dist < 0)
-		y_dist *= -1;
-	var->cast_len[index] = sqrt((x_dist * x_dist) + (y_dist * y_dist));
-}
-
-void	ray_cast(t_vars *var, int index, int vect)
-{
-	float	rx;
-	float	ry;
-	float	xo;
-	float	yo;
-
-	xo = cos((var->plyer->orientation + vect) * (M_PI / 180.0));
-	yo = sin((var->plyer->orientation + vect) * (M_PI / 180.0));
-	rx = var->plyer->x + xo;
-	ry = var->plyer->y + yo;
-	while (var->map[(int)rx][(int)ry] != '1'
-		&& var->map[(int)ceil(rx)][(int)ceil(ry)] != '1')
-	{
-		rx += xo;
-		ry += yo;
-	}
-	get_distance(var, index, rx, ry);
-}
-
-void	draw_vector(t_vars *var, int index, int vect)
-{
-	float	rx;
-	float	ry;
-	float	xo;
-	float	yo;
-
-	xo = cos((var->plyer->orientation + vect) * (M_PI / 180.0));
-	yo = sin((var->plyer->orientation + vect) * (M_PI / 180.0));
-	rx = var->plyer->x + xo;
-	ry = var->plyer->y + yo;
-	while (var->map[(int)rx][(int)ry] != '1'
-		&& var->map[(int)ceil(rx)][(int)ceil(ry)] != '1')
-	{
-		rx += xo;
-		ry += yo;
-		if (var->map[(int)rx][(int)ry] != '1'
-			&& var->map[(int)ceil(rx)][(int)ceil(ry)] != '1')
-			my_mlx_pixel_put(var->img, (int)ry, (int)rx, 0x00FF0000);
-	}
-}
-
-int	x_ok(t_vars *var, int pm)
-{
-	if (pm == PLUS)
-		return (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x + 1][var->plyer->y] != '1');
-	else if (pm == MINUS)
-		return (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x - 1][var->plyer->y] != '1');
-	return (0);
-}
-
-int	y_ok(t_vars *var, int pm)
-{
-	if (pm == PLUS)
-		return (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x][var->plyer->y + 1] != '1');
-	else if (pm == MINUS)
-		return (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x][var->plyer->y - 1] != '1');
-	return (0);
-}
-
 int	key_press(int key, t_vars *var)
 {
-	if (key == /*65307*/ 53)
+	double oldDirX = var->dirX;
+	double oldPlaneX = var->planeX;
+	double rotSpeed = 2 * (M_PI / 180);
+	double moveSpeed = 0.1;
+
+	if (key == 65307)
 		close_img_win(var);
-	else if (/*key == 122*/ key == 13) // UP
+	else if (key == 122) // UP
 	{
-		if (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x - 1][var->plyer->y] != '1')
-			var->plyer->x--;
+		if(var->map[(int)(var->plyer->x + var->dirX * moveSpeed)][(int)(var->plyer->y)] == '0') var->plyer->x += (float)(var->dirX * moveSpeed);
+		if(var->map[(int)(var->plyer->x)][(int)(var->plyer->y + var->dirY * moveSpeed)] == '0') var->plyer->y += (float)(var->dirY * moveSpeed);
 	}
-	else if (key == /*113*/ 0) // LEFT
+	else if (key == 113) // LEFT
 	{
-		if (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x][var->plyer->y - 1] != '1')
-			var->plyer->y--;
+		
 	}
-	else if (key == /*100*/ 2) // RIGHT
+	else if (key == 100) // RIGHT
 	{
-		if (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x][var->plyer->y + 1] != '1')
-			var->plyer->y++;
+
 	}
-	else if (key == /*115*/ 1) // DOWN
+	else if (key == 115) // DOWN
 	{
-		if (var->map[var->plyer->x][var->plyer->y]
-			&& var->map[var->plyer->x + 1][var->plyer->y] != '1')
-			var->plyer->x++;
+		if(var->map[(int)(var->plyer->x - var->dirX * moveSpeed)][(int)(var->plyer->y)] == '0') var->plyer->x -= var->dirX * moveSpeed;
+		if(var->map[(int)(var->plyer->x)][(int)(var->plyer->y - var->dirY * moveSpeed)] == '0') var->plyer->y -= var->dirY * moveSpeed;
 	}
-	else if (key == /*65361*/ 123)
+	else if (key == 65361)
 	{
-		if (var->plyer->orientation + 1 > 360)
-			var->plyer->orientation = 0;
-		var->plyer->orientation++;
+		var->dirX = var->dirX * cos(rotSpeed) - var->dirY * sin(rotSpeed);
+		var->dirY = oldDirX * sin(rotSpeed) + var->dirY * cos(rotSpeed);
+		var->planeX = var->planeX * cos(rotSpeed) - var->planeY * sin(rotSpeed);
+		var->planeY = oldPlaneX * sin(rotSpeed) + var->planeY * cos(rotSpeed);
 	}
-	else if (key == /*65363*/ 124)
+	else if (key == 65363)
 	{
-		if (var->plyer->orientation - 1 < 0)
-			var->plyer->orientation = 360;
-		var->plyer->orientation--;
+		var->dirX = var->dirX * cos(-rotSpeed) - var->dirY * sin(-rotSpeed);
+		var->dirY = oldDirX * sin(-rotSpeed) + var->dirY * cos(-rotSpeed);
+		var->planeX = var->planeX * cos(-rotSpeed) - var->planeY * sin(-rotSpeed);
+		var->planeY = oldPlaneX * sin(-rotSpeed) + var->planeY * cos(-rotSpeed);
 	}
 	return (0);
 }
