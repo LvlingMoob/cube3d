@@ -66,10 +66,14 @@ typedef struct s_vars {
 	float	*cast_len;
 	char	**map;
 	int		scale;
-	int		fd_no;
-	int		fd_so;
-	int		fd_we;
-	int		fd_ea;
+	void	*fool;
+	void	*chariot;
+	void	*hermit;
+	void	*world;
+	int		*fd_no;
+	int		*fd_so;
+	int		*fd_we;
+	int		*fd_ea;
 	int		floor[3];
 	int		ceiling[3];
 	double	dirX;
@@ -102,9 +106,8 @@ typedef struct s_lst_check
 # define S_HEIGHT 700.0
 # define SHIFT 60.0 / S_WIDTH
 # define CAM_SHIFT 2.0 / S_WIDTH
-# define P2 M_PI / 2
-# define P3 3 * M_PI / 2
-# define MAPS 64
+# define texWidth 64
+# define texHeight 64
 
 void	file_handler(t_fd_read *fdres, char *file_name);
 

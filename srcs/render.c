@@ -33,20 +33,25 @@ int	create_trgb(int t, int r, int g, int b)
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
-// void	cube_printing(pos, width, height)
-// {
-// 	;
-// }
+int	get_t(int trgb)
+{
+	return ((trgb >> 24) & 0xFF);
+}
 
-// void	vector2i(start end)
-// {
-// 	;
-// }
+int	get_r(int trgb)
+{
+	return ((trgb >> 16) & 0xFF);
+}
 
-// void	line_printing(start, end, src)
-// {
-// 	;
-// }
+int	get_g(int trgb)
+{
+	return ((trgb >> 8) & 0xFF);
+}
+
+int	get_b(int trgb)
+{
+	return (trgb & 0xFF);
+}
 
 float	dist(float ax, float ay, float bx, float by)
 {
@@ -151,44 +156,9 @@ void	wall_part(t_vars *var, int start, int end, int index, int lineh)
 
 void	drawRays3D(t_vars *var)
 {
-	static int whtever = 0;
 	double posX = var->plyer->x;
 	double posY = var->plyer->y;
 
-	double ra;
-	
-	ra = var->plyer->orientation;
-
-	if (ra > 360)
-		ra -= 360;
-	if (ra < 0)
-		ra += 360;
-
-	if (!whtever)
-	{
-		if (ra > 90 && ra < 270)
-		{	
-			var->dirX = -1;
-			var->dirY = 0;
-		}
-		if ((ra > 270 && ra <= 360)
-			|| (ra >= 0 && ra < 90))
-		{	
-			var->dirX = 1;
-			var->dirY = 0;
-		}
-		if (ra > 0 && ra < 180)
-		{	
-			var->dirY = 1;
-			var->dirX = 0;
-		}
-		if (ra > 180 && ra < 360)
-		{	
-			var->dirY = -1;
-			var->dirX = 0;
-		}
-		whtever = 1;
-	}
 	for(int x = 0; x < S_WIDTH; x++)
 	{
 		double cameraX = -1 + (x * CAM_SHIFT);
@@ -250,18 +220,63 @@ void	drawRays3D(t_vars *var)
 				hit = 1;
 		}
 
+		int pitch = 100;
+
 		if(side == 0) 
 			perpWallDist = (sideDistX - deltaDistX);
 		else
 			perpWallDist = (sideDistY - deltaDistY);
 		int lineHeight = (int)(S_HEIGHT / perpWallDist);
-		int drawStart = -lineHeight / 2 + S_HEIGHT / 2;
+
+		int drawStart = -lineHeight / 2 + S_HEIGHT / 2 + pitch;
 		if(drawStart < 0)
 			drawStart = 0;
-		int drawEnd = lineHeight / 2 + S_HEIGHT / 2;
+		int drawEnd = lineHeight / 2 + S_HEIGHT / 2 + pitch;
 		if(drawEnd >= S_HEIGHT) 
 			drawEnd = S_HEIGHT - 1;
-		wall_part(var, drawStart, drawEnd, x, lineHeight);
+
+		// wall_part(var, drawStart, drawEnd, x, lineHeight);
+		//calculate value of wallX
+		double wallX; //where exactly the wall was hit
+		if(side == 0) wallX = posY + perpWallDist * rayDirY;
+		else          wallX = posX + perpWallDist * rayDirX;
+		wallX -= floor((wallX));
+
+		//x coordinate on the texture
+		int texX = (int)(wallX * (double)(texWidth));
+		if(side == 0 && rayDirX > 0) texX = texWidth - texX - 1;
+		if(side == 1 && rayDirY < 0) texX = texWidth - texX - 1;
+
+		// TODO: an integer-only bresenham or DDA like algorithm could make the texture coordinate stepping faster
+		// How much to increase the texture coordinate per screen pixel
+		double step = 1.0 * texHeight / lineHeight;
+		// Starting texture coordinate
+		double texPos = (drawStart - pitch - S_HEIGHT / 2 + lineHeight / 2) * step;
+		int color;
+		while (drawStart < drawEnd)
+		{
+			int texY = (int)texPos & (texHeight - 1);
+			texPos += step;
+			if (side)
+			{
+				if (stepY == 1)
+					color = var->fd_ea[texHeight * texY + texX];
+				else
+					color = var->fd_we[texHeight * texY + texX];
+			}
+			else if (!side)
+			{
+				if (stepX == 1)
+					color = var->fd_so[texHeight * texY + texX];
+				else
+					color = var->fd_no[texHeight * texY + texX];
+			}
+			else
+				color = 0x0FFFFFF;
+			// my_mlx_pixel_put(var->img, x, drawStart,  create_trgb(200, lineHeight / 3, lineHeight / 3, lineHeight / 3));
+			my_mlx_pixel_put(var->img, x, drawStart,  create_trgb(255, get_r(color), get_g(color), get_b(color)));
+			drawStart++;
+		}
 	}
 }
 
@@ -281,11 +296,19 @@ int	render_next_frame(t_vars *var)
 }
 
 
+	
 
 
 
+// int width = 64;
+// int height = 64;
+// int	*ret;
+// void *test = mlx_xpm_file_to_image(var.mlx, argv[1], &width, &height);
 
-
+// ret = ft_calloc(1, sizeof(int));
+// ret = (int *)mlx_get_data_addr(test, &img.bits_per_pixel, &img.line_length, &img.endian);
+// while (*ret)
+// 	printf("%d\n", *(ret++));
 
 
 

@@ -26,6 +26,8 @@ int	key_press(int key, t_vars *var)
 	double oldPlaneX = var->planeX;
 	double rotSpeed = 2 * (M_PI / 180);
 	double moveSpeed = 0.1;
+	double tmpdirX;
+	double tmpdirY;
 
 	if (key == 65307)
 		close_img_win(var);
@@ -36,11 +38,17 @@ int	key_press(int key, t_vars *var)
 	}
 	else if (key == 113) // LEFT
 	{
-		
+		tmpdirX = var->dirX * cos(90 * (M_PI / 180)) - var->dirY * sin(90 * (M_PI / 180));
+		tmpdirY = oldDirX * sin(90 * (M_PI / 180)) + var->dirY * cos(90 * (M_PI / 180));
+		if(var->map[(int)(var->plyer->x + tmpdirX * moveSpeed)][(int)(var->plyer->y)] == '0') var->plyer->x += (float)(tmpdirX * moveSpeed);
+		if(var->map[(int)(var->plyer->x)][(int)(var->plyer->y + tmpdirY * moveSpeed)] == '0') var->plyer->y += (float)(tmpdirY * moveSpeed);
 	}
 	else if (key == 100) // RIGHT
 	{
-
+		tmpdirX = var->dirX * cos(-90 * (M_PI / 180)) - var->dirY * sin(-90 * (M_PI / 180));
+		tmpdirY = oldDirX * sin(-90 * (M_PI / 180)) + var->dirY * cos(-90 * (M_PI / 180));
+		if(var->map[(int)(var->plyer->x + tmpdirX * moveSpeed)][(int)(var->plyer->y)] == '0') var->plyer->x += (float)(tmpdirX * moveSpeed);
+		if(var->map[(int)(var->plyer->x)][(int)(var->plyer->y + tmpdirY * moveSpeed)] == '0') var->plyer->y += (float)(tmpdirY * moveSpeed);
 	}
 	else if (key == 115) // DOWN
 	{
