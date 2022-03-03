@@ -1,5 +1,5 @@
 #ifndef CUBE_H
-#define CUBE_H
+# define CUBE_H
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -23,30 +23,56 @@ enum e_type
 	C,
 	SET,
 	GET,
-	RIGHT,
-	LEFT,
-	UP,
-	DOWN,
 	VERT,
 	HOR,
 	PLUS,
 	MINUS
 };
 
-typedef struct	s_ray
+typedef struct s_key
 {
-	int		x;
-	int		y;
-	int		len;
-	float	angle;
+	double	olddirx;
+	double	oldplanex;
+	double	rotspeed;
+	double	movespeed;
+	double	tmpdirx;
+	double	tmpdiry;
+}				t_key;
+
+typedef struct s_ray
+{
+	int		color;
+	int		stepx;
+	int		stepy;
+	int		mapx;
+	int		mapy;
+	int		hit;
+	int		side;
+	int		pitch;
+	int		lineheight;
+	int		drawstart;
+	int		drawend;
+	int		texx;
+	int		texy;
+	double	posx;
+	double	posy;
+	double	camerax;
+	double	raydirx;
+	double	raydiry;
+	double	sidedistx;
+	double	sidedisty;
+	double	deltadistx;
+	double	deltadisty;
+	double	perpwalldist;
+	double	wallx;
+	double	step;
+	double	texpos;
 }				t_ray;
 
-typedef struct	s_plyer
+typedef struct s_plyer
 {
 	float	x;
-	float	pdx;
 	float	y;
-	float	pdy;
 	float	orientation;
 }				t_plyer;
 
@@ -66,7 +92,7 @@ typedef struct s_vars {
 	float	*cast_len;
 	char	**map;
 	int		scale;
-	void	*fool;
+	void	*hiero;
 	void	*chariot;
 	void	*hermit;
 	void	*world;
@@ -101,20 +127,23 @@ typedef struct s_lst_check
 	int		to_value;
 }				t_lst_check;
 
-# define PI 3.1415926535
 # define S_WIDTH 1200.0
 # define S_HEIGHT 700.0
-# define SHIFT 60.0 / S_WIDTH
-# define CAM_SHIFT 2.0 / S_WIDTH
+# define CAM_SHIFT 2.0/S_WIDTH
 # define texWidth 64
 # define texHeight 64
+# define UP 122
+# define LEFT 113
+# define RIGHT 100
+# define DOWN 115
+# define R_ROT 65363
+# define L_ROT 65361
 
 void	file_handler(t_fd_read *fdres, char *file_name);
 
 void	free_and_quit(t_fd_read *fdres, int quit);
 void	ft_free_char_array(char **char_array);
 int		close_img_win(t_vars *var);
-
 
 void	err_print(t_fd_read *fdres, char *expected_value, int l);
 int		end_line_checker(char *line, int l);
@@ -126,11 +155,9 @@ int		authorized_char(char c);
 char	*str_char_cat(char *buf, char c);
 int		player_set(int status);
 
-
 int		fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
 
 void	map_checker(t_fd_read *fdres);
-
 
 void	first_last_line_checker(t_fd_read *fdres, int i);
 void	space_checker(t_fd_read *fdres, int i, int j);
@@ -152,5 +179,17 @@ void	draw_vector(t_vars *var, int index, int vect);
 
 int		max_height(int status, int value);
 int		max_width(int status, int value);
+void	get_textures(t_vars *var);
+
+void	cube_drawing(t_vars *var, int x, int y, int color);
+void	minimap(t_vars *var);
+void	plyrpos(t_vars *var);
+
+int	create_trgb(int t, int r, int g, int b);
+int	get_t(int trgb);
+int	get_r(int trgb);
+int	get_g(int trgb);
+int	get_b(int trgb);
+
 
 #endif

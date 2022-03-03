@@ -30,6 +30,51 @@ void	initfdres(t_fd_read *fdres)
 	fdres->map = NULL;
 }
 
+void	look_up(t_vars *var)
+{
+	var->dirX = -1;
+	var->dirY = 0;
+	var->planeX = 0.0;
+	var->planeY = 0.66;
+}
+
+void	look_down(t_vars *var)
+{
+	var->dirX = 1;
+	var->dirY = 0;
+	var->planeX = 0;
+	var->planeY = -0.66;
+}
+
+void	look_right(t_vars *var)
+{
+	var->dirY = 1;
+	var->dirX = 0;
+	var->planeX = 0.66;
+	var->planeY = 0;
+}
+
+void	look_left(t_vars *var)
+{
+	var->dirY = -1;
+	var->dirX = 0;
+	var->planeX = -0.66;
+	var->planeY = 0;
+}
+
+void	initial_orientation_set_up(t_vars *var)
+{
+	if (var->plyer->orientation > 90 && var->plyer->orientation < 270)
+		look_up(var);
+	if ((var->plyer->orientation > 270 && var->plyer->orientation <= 360)
+		|| (var->plyer->orientation >= 0 && var->plyer->orientation < 90))
+		look_down(var);
+	if (var->plyer->orientation > 0 && var->plyer->orientation < 180)
+		look_right(var);
+	if (var->plyer->orientation > 180 && var->plyer->orientation < 360)
+		look_left(var);
+}
+
 void	get_start_orientation(t_vars *var, char c)
 {
 	if (c == 'N')
@@ -40,45 +85,8 @@ void	get_start_orientation(t_vars *var, char c)
 		var->plyer->orientation = 270;
 	else if (c == 'E')
 		var->plyer->orientation = 90;
-	var->plyer->pdx = cos(var->plyer->orientation * (M_PI / 180));
-	var->plyer->pdy = sin(var->plyer->orientation * (M_PI / 180));
-
-	double ra;
-	
-	ra = var->plyer->orientation;
-
-	if (ra > 90 && ra < 270)
-	{	
-		var->dirX = -1;
-		var->dirY = 0;
-		var->planeX = 0.0;
-		var->planeY = 0.66;
-	}
-	if ((ra > 270 && ra <= 360)
-		|| (ra >= 0 && ra < 90))
-	{	
-		var->dirX = 1;
-		var->dirY = 0;
-		var->planeX = 0;
-		var->planeY = -0.66;
-	}
-	if (ra > 0 && ra < 180)
-	{	
-		var->dirY = 1;
-		var->dirX = 0;
-		var->planeX = 0.66;
-		var->planeY = 0;
-	}
-	if (ra > 180 && ra < 360)
-	{	
-		var->dirY = -1;
-		var->dirX = 0;
-		var->planeX = -0.66;
-		var->planeY = 0;
-		
-	}
+	initial_orientation_set_up(var);
 }
-
 
 void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
 {
@@ -106,17 +114,4 @@ void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
 		i++;
 	}
 	cp_char_array(&var->map, fdres->map);
-	
 }
-
-
-
-// int width = 64;
-// int height = 64;
-// int	*ret;
-// void *test = mlx_xpm_file_to_image(var.mlx, argv[1], &width, &height);
-
-// ret = ft_calloc(1, sizeof(int));
-// ret = (int *)mlx_get_data_addr(test, &img.bits_per_pixel, &img.line_length, &img.endian);
-// while (*ret)
-// 	printf("%d\n", *(ret++));

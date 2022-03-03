@@ -15,7 +15,7 @@
 int	close_img_win(t_vars *var)
 {
 	mlx_destroy_image(var->mlx, var->img->img);
-	mlx_destroy_image(var->mlx, var->fool);
+	mlx_destroy_image(var->mlx, var->hiero);
 	mlx_destroy_image(var->mlx, var->chariot);
 	mlx_destroy_image(var->mlx, var->hermit);
 	mlx_destroy_image(var->mlx, var->world);
@@ -24,7 +24,6 @@ int	close_img_win(t_vars *var)
 	free(var->mlx);
 	free(var->plyer);
 	free(var->cast_len);
-	// free(var->fd_no);
 	ft_free_char_array(var->map);
 	exit(0);
 }

@@ -22,7 +22,9 @@ SRCS		=	${SRCFILE}main.c\
 				${SRCFILE}init_str.c\
 				${SRCFILE}ft_minilibx.c\
 				${SRCFILE}ft_check.c\
+				${SRCFILE}ft_color.c\
 				${SRCFILE}render.c\
+				${SRCFILE}minimap.c\
 				${SRCFILE}free.c\
 				${SRCFILE}utils.c\
 

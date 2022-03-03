@@ -12,466 +12,170 @@
 
 #include "cube.h"
 
-int	create_trgb(int t, int r, int g, int b)
+void	cam_orientation_setup(t_ray *cast, t_vars *var, int x)
 {
-	if (t > 255)
-		t = 255;
-	if (t < 0)
-		t = 0;
-	if (r > 255)
-		r = 255;
-	if (r < 0)
-		r = 0;
-	if (g > 255)
-		g = 255;
-	if (g < 0)
-		g = 0;
-	if (b > 255)
-		b = 255;
-	if (b < 0)
-		b = 0;
-	return (t << 24 | r << 16 | g << 8 | b);
+	cast->camerax = -1 + (x * CAM_SHIFT);
+	cast->raydirx = var->dirX + var->planeX * cast->camerax;
+	cast->raydiry = var->dirY + var->planeY * cast->camerax;
+	cast->mapx = (int)cast->posx;
+	cast->mapy = (int)cast->posy;
+	if (cast->raydirx == 0)
+		cast->deltadistx = 1e30;
+	else
+		cast->deltadistx = fabs((1 / cast->raydirx));
+	if (cast->raydiry == 0)
+		cast->deltadisty = 1e30;
+	else
+		cast->deltadisty = fabs((1 / cast->raydiry));
 }
 
-int	get_t(int trgb)
+void	vector_step_setup(t_ray *cast, t_vars *var)
 {
-	return ((trgb >> 24) & 0xFF);
-}
-
-int	get_r(int trgb)
-{
-	return ((trgb >> 16) & 0xFF);
-}
-
-int	get_g(int trgb)
-{
-	return ((trgb >> 8) & 0xFF);
-}
-
-int	get_b(int trgb)
-{
-	return (trgb & 0xFF);
-}
-
-float	dist(float ax, float ay, float bx, float by)
-{
-	return (sqrt(((bx - ax) * (bx - ax)) + ((by - ay) * (by - ay))));
-}
-
-void	cube_drawing(t_vars *var, int x, int y, int color)
-{
-	int	i;
-	int	j;
-
-	i = x * 16 + 1;
-	while (i < (x * 16 + 1) + 14)
+	if (cast->raydirx < 0)
 	{
-		j = y * 16;
-		while (j < (y * 16 + 1) + 14)
+		cast->stepx = -1;
+		cast->sidedistx = (cast->posx - cast->mapx) * cast->deltadistx;
+	}
+	else
+	{
+		cast->stepx = 1;
+		cast->sidedistx = (cast->mapx + 1.0 - cast->posx) * cast->deltadistx;
+	}
+	if (cast->raydiry < 0)
+	{
+		cast->stepy = -1;
+		cast->sidedisty = (cast->posy - cast->mapy) * cast->deltadisty;
+	}
+	else
+	{
+		cast->stepy = 1;
+		cast->sidedisty = (cast->mapy + 1.0 - cast->posy) * cast->deltadisty;
+	}
+}
+
+void	perform_dda(t_ray *cast, t_vars *var)
+{
+	while (cast->hit == 0)
+	{
+		if (cast->sidedistx < cast->sidedisty)
 		{
-			my_mlx_pixel_put(var->img,  i, j, color);
-			j++;
-		}
-		i++;
-	}
-}
-
-void	minimap(t_vars *var)
-{
-	int	y;
-	int	x;
-
-	y = 0;
-	while (var->map[y])
-	{
-		x = 0;
-		while (var->map[y][x])
-		{
-			if (var->map[y][x] == '1')
-				cube_drawing(var, x, y, 0xFFFFFFFF);
-			x++;
-		}
-		y++;
-	}
-}
-
-void	plyrpos(t_vars *var)
-{
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y, 16 * var->plyer->x, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y + 1, 16 * var->plyer->x, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y + 1, 16 * var->plyer->x + 1, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y + 1, 16 * var->plyer->x - 1, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y - 1, 16 * var->plyer->x, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y - 1, 16 * var->plyer->x + 1, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y - 1, 16 * var->plyer->x - 1, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y, 16 * var->plyer->x + 1, 0x00FFFFFF);
-	my_mlx_pixel_put(var->img, 16 * var->plyer->y, 16 * var->plyer->x - 1, 0x00FFFFFF);
-}
-
-void	draw_top_offset(t_vars *var, float start, int index)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < start)
-	{
-		my_mlx_pixel_put(var->img, index, i, 0x000000FF);
-		i++;
-	}
-}
-
-void	draw_wall_part(t_vars *var, float *start, int index, int lineh)
-{
-	int	i;
-	int	end;
-
-	end = S_HEIGHT - (*start);
-	while ((*start) < end)
-	{
-		my_mlx_pixel_put(var->img, index, (*start),  create_trgb(255, lineh / 3, lineh / 3, lineh / 3));
-		(*start) += 1;
-	}
-}
-
-void	draw_bottom_offset(t_vars *var, float start, int index)
-{
-	int	i;
-
-	while (start < S_HEIGHT)
-	{
-		my_mlx_pixel_put(var->img, index, start, 0x000000FF);
-		start++;
-	}
-}
-
-void	wall_part(t_vars *var, int start, int end, int index, int lineh)
-{
-	while (start < end)
-	{
-		my_mlx_pixel_put(var->img, index, start,  create_trgb(255, lineh / 3, lineh / 3, lineh / 3));
-		start++;
-	}
-}
-
-void	drawRays3D(t_vars *var)
-{
-	double posX = var->plyer->x;
-	double posY = var->plyer->y;
-
-	for(int x = 0; x < S_WIDTH; x++)
-	{
-		double cameraX = -1 + (x * CAM_SHIFT);
-		double rayDirX = var->dirX + var->planeX * cameraX;
-		double rayDirY = var->dirY + var->planeY * cameraX;
-		int mapX = (int)posX;
-		int mapY = (int)posY;
-
-		double sideDistX;
-		double sideDistY;
-		
-		double deltaDistX = (rayDirX == 0) ? 1e30 : fabs((1 / rayDirX));
-		double deltaDistY = (rayDirY == 0) ? 1e30 : fabs((1 / rayDirY));
-
-		double perpWallDist;
-		int stepX;
-		int stepY;
-
-		int hit = 0;
-		int side;
-		if(rayDirX < 0)
-		{
-			stepX = -1;
-			sideDistX = (posX - mapX) * deltaDistX;
+			cast->sidedistx += cast->deltadistx;
+			cast->mapx += cast->stepx;
+			cast->side = 0;
 		}
 		else
 		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+			cast->sidedisty += cast->deltadisty;
+			cast->mapy += cast->stepy;
+			cast->side = 1;
 		}
-		if(rayDirY < 0)
+		if (var->map[cast->mapx][cast->mapy] == '1')
+			cast->hit = 1;
+	}
+}
+
+void	set_drawing_area(t_ray *cast, t_vars *var)
+{
+	if (cast->side == 0)
+		cast->perpwalldist = (cast->sidedistx - cast->deltadistx);
+	else
+		cast->perpwalldist = (cast->sidedisty - cast->deltadisty);
+	cast->lineheight = (int)(S_HEIGHT / cast->perpwalldist);
+	cast->drawstart = -cast->lineheight / 2 + S_HEIGHT / 2 + cast->pitch;
+	if (cast->drawstart < 0)
+		cast->drawstart = 0;
+	cast->drawend = cast->lineheight / 2 + S_HEIGHT / 2 + cast->pitch;
+	if (cast->drawend >= S_HEIGHT)
+		cast->drawend = S_HEIGHT - 1;
+}
+
+void	set_texture(t_ray *cast, t_vars *var)
+{
+	if (cast->side == 0)
+		cast->wallx = cast->posy + cast->perpwalldist * cast->raydiry;
+	else
+		cast->wallx = cast->posx + cast->perpwalldist * cast->raydirx;
+	cast->wallx -= floor((cast->wallx));
+	cast->texx = (int)(cast->wallx * (double)(texWidth));
+	if (cast->side == 0 && cast->raydirx > 0)
+		cast->texx = texWidth - cast->texx - 1;
+	if (cast->side == 1 && cast->raydiry < 0)
+		cast->texx = texWidth - cast->texx - 1;
+	cast->step = 1.0 * texHeight / cast->lineheight;
+	cast->texpos = (cast->drawstart - cast->pitch
+			- S_HEIGHT / 2 + cast->lineheight / 2) * cast->step;
+}
+
+void	draw(t_ray *cast, t_vars *var, int x)
+{
+	while (cast->drawstart < cast->drawend)
+	{
+		cast->texy = (int)cast->texpos & (texHeight - 1);
+		cast->texpos += cast->step;
+		if (cast->side)
 		{
-			stepY = -1;
-			sideDistY = (posY - mapY) * deltaDistY;
-		}
-		else
-		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
-		}
-		//perform DDA
-		while(hit == 0)
-		{
-			//jump to next map square, either in x-direction, or in y-direction
-			if(sideDistX < sideDistY)
-			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
-			}
+			if (cast->stepy == 1)
+				cast->color = var->fd_ea[texHeight * cast->texy + cast->texx];
 			else
-			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
-			}
-			//Check if ray has hit a wall
-			if(var->map[mapX][mapY] == '1')
-				hit = 1;
+				cast->color = var->fd_we[texHeight * cast->texy + cast->texx];
 		}
-
-		int pitch = 100;
-
-		if(side == 0) 
-			perpWallDist = (sideDistX - deltaDistX);
-		else
-			perpWallDist = (sideDistY - deltaDistY);
-		int lineHeight = (int)(S_HEIGHT / perpWallDist);
-
-		int drawStart = -lineHeight / 2 + S_HEIGHT / 2 + pitch;
-		if(drawStart < 0)
-			drawStart = 0;
-		int drawEnd = lineHeight / 2 + S_HEIGHT / 2 + pitch;
-		if(drawEnd >= S_HEIGHT) 
-			drawEnd = S_HEIGHT - 1;
-
-		// wall_part(var, drawStart, drawEnd, x, lineHeight);
-		//calculate value of wallX
-		double wallX; //where exactly the wall was hit
-		if(side == 0) wallX = posY + perpWallDist * rayDirY;
-		else          wallX = posX + perpWallDist * rayDirX;
-		wallX -= floor((wallX));
-
-		//x coordinate on the texture
-		int texX = (int)(wallX * (double)(texWidth));
-		if(side == 0 && rayDirX > 0) texX = texWidth - texX - 1;
-		if(side == 1 && rayDirY < 0) texX = texWidth - texX - 1;
-
-		// TODO: an integer-only bresenham or DDA like algorithm could make the texture coordinate stepping faster
-		// How much to increase the texture coordinate per screen pixel
-		double step = 1.0 * texHeight / lineHeight;
-		// Starting texture coordinate
-		double texPos = (drawStart - pitch - S_HEIGHT / 2 + lineHeight / 2) * step;
-		int color;
-		while (drawStart < drawEnd)
+		else if (!cast->side)
 		{
-			int texY = (int)texPos & (texHeight - 1);
-			texPos += step;
-			if (side)
-			{
-				if (stepY == 1)
-					color = var->fd_ea[texHeight * texY + texX];
-				else
-					color = var->fd_we[texHeight * texY + texX];
-			}
-			else if (!side)
-			{
-				if (stepX == 1)
-					color = var->fd_so[texHeight * texY + texX];
-				else
-					color = var->fd_no[texHeight * texY + texX];
-			}
+			if (cast->stepx == 1)
+				cast->color = var->fd_so[texHeight * cast->texy + cast->texx];
 			else
-				color = 0x0FFFFFF;
-			// my_mlx_pixel_put(var->img, x, drawStart,  create_trgb(200, lineHeight / 3, lineHeight / 3, lineHeight / 3));
-			my_mlx_pixel_put(var->img, x, drawStart,  create_trgb(255, get_r(color), get_g(color), get_b(color)));
-			drawStart++;
+				cast->color = var->fd_no[texHeight * cast->texy + cast->texx];
 		}
+		else
+			cast->color = 0x0FFFFFF;
+		my_mlx_pixel_put(var->img, x, cast->drawstart,
+			create_trgb(255,
+				get_r(cast->color), get_g(cast->color), get_b(cast->color)));
+		cast->drawstart++;
+	}
+}
+
+void	rayscasting(t_vars *var)
+{
+	int		x;
+	t_ray	cast;
+
+	x = 0;
+	cast.pitch = 100;
+	cast.posx = var->plyer->x;
+	cast.posy = var->plyer->y;
+	while (x < S_WIDTH)
+	{
+		cam_orientation_setup(&cast, var, x);
+		cast.hit = 0;
+		vector_step_setup(&cast, var);
+		perform_dda(&cast, var);
+		set_drawing_area(&cast, var);
+		set_texture(&cast, var);
+		draw(&cast, var, x);
+		x++;
 	}
 }
 
 int	render_next_frame(t_vars *var)
 {
-	for (int i = 0; i < S_WIDTH; i++)
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < S_WIDTH)
 	{
-		for (int j = 0; j < S_HEIGHT; j++)
+		j = 0;
+		while (j < S_HEIGHT)
+		{
 			my_mlx_pixel_put(var->img, i, j, 0x00000000);
+			j++;
+		}
+		i++;
 	}
-	drawRays3D(var);
+	rayscasting(var);
 	minimap(var);
 	plyrpos(var);
-
 	mlx_put_image_to_window(var->mlx, var->win, var->img->img, 0, 0);
 	return (1);
 }
-
-
-	
-
-
-
-// int width = 64;
-// int height = 64;
-// int	*ret;
-// void *test = mlx_xpm_file_to_image(var.mlx, argv[1], &width, &height);
-
-// ret = ft_calloc(1, sizeof(int));
-// ret = (int *)mlx_get_data_addr(test, &img.bits_per_pixel, &img.line_length, &img.endian);
-// while (*ret)
-// 	printf("%d\n", *(ret++));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// void	drawRays3D(t_vars *var)
-// {
-// 	int		r, mx, my, mp, dof, distT, mapX, mapY;
-// 	float	rx, ry, hx, hy, vx, vy, ra, xo, yo;
-
-
-// /*-------------------------------HORIZONTAL-------------------------------*/
-// /*------------------------------------------------------------------------*/
-// 	mapX = max_width(GET, 0);
-// 	mapY = max_height(GET, 0);
-
-// 	ra = var->plyer->orientation - 30;
-// 	if (ra < 0)
-// 		ra += 360;
-// 	if (ra > 360)
-// 		ra -= 360;
-// 	for (r = 0; r < S_WIDTH ; r++)
-// 	{
-// 		dof = 0;
-// 		float	distH = 10000000000;
-// 		hx = var->plyer->x;
-// 		hy = var->plyer->y;
-// 		float	aTan = -1 / tan(ra * (M_PI / 180));
-// 		if (ra > 90 && ra < 270) // looking up
-// 		{
-// 			ry = (((int)var->plyer->y >> 6) << 6) - 0.0001;
-// 			rx = (var->plyer->y - ry) * aTan + var->plyer->x;
-// 			yo = -64;
-// 			xo = -yo * aTan;
-// 		}
-// 		if ((ra > 270 && ra < 360) || (ra > 0 && ra < 90)) // looking down
-// 		{
-// 			ry = (((int)var->plyer->y >> 6) << 6) + 64;
-// 			rx = (var->plyer->y - ry) * aTan + var->plyer->x;
-// 			yo = 64;
-// 			xo = -yo * aTan;
-// 		}
-// 		if (ra == 90 || ra == 270)
-// 		{
-// 			rx = var->plyer->x;
-// 			ry = var->plyer->y;
-// 			dof = 150;
-// 		}
-// 		while (dof < 150) // dof = depth of field
-// 		{
-// 			mx = (int)(rx) >> 6;
-// 			my = (int)(ry) >> 6;
-// 			mp = my * mapX + mx;
-// 			if (mp > 0 && mp < mapX * mapY && var->map[mp] == '1') // hit wall
-// 			{
-// 				hx = rx;
-// 				hy = ry;
-// 				distH = dist(var->plyer->x, var->plyer->y, hx, hy);
-// 				break ;
-// 			}
-// 			else
-// 			{
-// 				rx += xo;
-// 				ry += yo;
-// 				dof += 1;
-// 			}
-// 		}
-
-// 	/*--------------------------------VERTICAL--------------------------------*/
-// 	/*------------------------------------------------------------------------*/
-// 		dof = 0;
-// 		float	distV = 1000000000;
-// 		vx = var->plyer->x;
-// 		vy = var->plyer->y;
-// 		float naTan = -tan(ra * (M_PI / 180));
-// 		if (ra > 180 && ra < 360) // looking left
-// 		{
-// 			rx = (((int)var->plyer->x >> 6) << 6) - 0.0001;
-// 			ry = (var->plyer->x - rx) * naTan + var->plyer->y;
-// 			xo = -64;
-// 			yo = -xo * naTan;
-// 		}
-// 		if (ra > 0 || ra < 180) // looking right
-// 		{
-// 			rx = (((int)var->plyer->x >> 6) << 6) + 64;
-// 			ry = (var->plyer->x - rx) * naTan + var->plyer->y;
-// 			xo = 64;
-// 			yo = -xo * naTan;
-// 		}
-// 		if (ra == 0 || ra == 180) // up down
-// 		{
-// 			rx = var->plyer->x;
-// 			ry = var->plyer->y;
-// 			dof = 150;
-// 		}
-// 		while (dof < 150) // dof = depth of field
-// 		{
-// 			mx = (int)(rx) >> 6;
-// 			my = (int)(ry) >> 6;
-// 			mp = my * mapX + mx;
-// 			if (mp > 0 && mp < mapX * mapY && var->map[mp] == '1') // hit wall
-// 			{
-// 				vx = rx;
-// 				vy = ry;
-// 				distV = dist(var->plyer->x, var->plyer->y, vx, vy);
-// 				break ;
-// 			}
-// 			else
-// 			{
-// 				rx += xo;
-// 				ry += yo;
-// 				dof += 1;
-// 			}
-// 		}
-// 		if (distV < distH)
-// 		{
-// 			rx = vx;
-// 			ry = vy;
-// 			distT = distV;
-// 		}
-// 		if (distH < distV)
-// 		{
-// 			rx = hx;
-// 			ry = hy;
-// 			distT = distH;
-// 		}
-// /*--------------------------3D walls-------------------------------*/
-// 		float ca = var->plyer->orientation - ra;
-// 		if (ca < 0)
-// 			ca += 360;
-// 		if (ca > 360)
-// 			ca -= 360;
-// 		distT = distT * cos(ca * (M_PI / 180));  // fisheye fixer
-// 		float lineH = (MAPS * S_HEIGHT) / distT;
-// 		float lineO = 160 - lineH / 2;
-// 		if (lineH > S_HEIGHT || lineO < 0)
-// 			lineO = 0;
-// 		printf("%f\n", lineO);
-// 		draw_top_offset(var, lineO, r);
-// 		draw_wall_part(var, &lineO, r, lineH);
-// 		draw_bottom_offset(var, lineO, r);
-// /*-----------------------------------------------------------------*/		
-// 		ra += SHIFT;
-// 		if (ra < 0)
-// 			ra += 360;
-// 		if (ra > 360)
-// 			ra -= 360;
-// 	}
-// }

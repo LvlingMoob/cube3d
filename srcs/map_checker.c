@@ -12,6 +12,34 @@
 
 #include "cube.h"
 
+void	get_textures(t_vars *var)
+{
+	int	width;
+	int	height;
+
+	width = 64;
+	height = 64;
+	var->hiero = mlx_xpm_file_to_image(var->mlx, "pics/hierophante.xpm",
+			&width, &height);
+	var->fd_no = (int *)mlx_get_data_addr(var->hiero, &var->img->bits_per_pixel,
+			&var->img->line_length, &var->img->endian);
+	var->chariot = mlx_xpm_file_to_image(var->mlx, "pics/chariot.xpm",
+			&width, &height);
+	var->fd_we = (int *)mlx_get_data_addr(var->chariot,
+			&var->img->bits_per_pixel,
+			&var->img->line_length, &var->img->endian);
+	var->hermit = mlx_xpm_file_to_image(var->mlx, "pics/hermit.xpm",
+			&width, &height);
+	var->fd_ea = (int *)mlx_get_data_addr(var->hermit,
+			&var->img->bits_per_pixel,
+			&var->img->line_length, &var->img->endian);
+	var->world = mlx_xpm_file_to_image(var->mlx, "pics/world.xpm",
+			&width, &height);
+	var->fd_so = (int *)mlx_get_data_addr(var->world,
+			&var->img->bits_per_pixel,
+			&var->img->line_length, &var->img->endian);
+}
+
 void	map_checker(t_fd_read *fdres)
 {
 	int	i;
