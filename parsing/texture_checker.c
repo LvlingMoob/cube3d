@@ -27,6 +27,7 @@ int	digit_value_checker(char *values)
 			return (0);
 		i++;
 	}
+	// ici verif si chiffre < 3
 	if (coma > 2)
 		return (-1);
 	return (1);

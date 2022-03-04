@@ -14,6 +14,7 @@ FLAGS		= -I/usr/include -Iheaders -Imlx_linux -O3 -c
 FLAGSSUP	= -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 SRCFILE		=	./srcs/
+UTIFILE		=	./utils/
 PRSFILE		=	./parsing/
 
 SRCS		=	${SRCFILE}main.c\
@@ -51,4 +52,7 @@ re:	fclean all
 
 rebonus: fclean bonus
 
-.PHONY:	all clean fclean re rebonus prog bonus
+norme :
+	norminette $(SRCFILE) $(UTIFILE) $(PRSFILE)
+
+.PHONY:	all clean fclean re rebonus prog bonus norme

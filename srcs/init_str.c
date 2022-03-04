@@ -12,6 +12,23 @@
 
 #include "cube.h"
 
+void	floor_and_ceiling_init(t_fd_read *fdres, t_vars *var)
+{
+	char	**ftmp;
+	char	**ctmp;
+
+	ftmp = ft_split(fdres->f, ',');
+	ctmp = ft_split(fdres->c, ',');
+	var->floor[0] = ft_atoi(ftmp[0]);
+	var->floor[1] = ft_atoi(ftmp[1]);
+	var->floor[2] = ft_atoi(ftmp[2]);
+	var->ceiling[0] = ft_atoi(ctmp[0]);
+	var->ceiling[1] = ft_atoi(ctmp[1]);
+	var->ceiling[2] = ft_atoi(ctmp[2]);
+	ft_free_char_array(ftmp);
+	ft_free_char_array(ctmp);
+}
+
 void	initfdres(t_fd_read *fdres)
 {
 	fdres->values = ft_calloc(7, sizeof(char *));
@@ -28,38 +45,6 @@ void	initfdres(t_fd_read *fdres)
 	fdres->f = NULL;
 	fdres->c = NULL;
 	fdres->map = NULL;
-}
-
-void	look_up(t_vars *var)
-{
-	var->dirX = -1;
-	var->dirY = 0;
-	var->planeX = 0.0;
-	var->planeY = 0.66;
-}
-
-void	look_down(t_vars *var)
-{
-	var->dirX = 1;
-	var->dirY = 0;
-	var->planeX = 0;
-	var->planeY = -0.66;
-}
-
-void	look_right(t_vars *var)
-{
-	var->dirY = 1;
-	var->dirX = 0;
-	var->planeX = 0.66;
-	var->planeY = 0;
-}
-
-void	look_left(t_vars *var)
-{
-	var->dirY = -1;
-	var->dirX = 0;
-	var->planeX = -0.66;
-	var->planeY = 0;
 }
 
 void	initial_orientation_set_up(t_vars *var)
