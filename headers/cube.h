@@ -91,7 +91,6 @@ typedef struct s_vars {
 	t_data	*img;
 	float	*cast_len;
 	char	**map;
-	int		scale;
 	void	*hiero;
 	void	*chariot;
 	void	*hermit;
@@ -130,14 +129,14 @@ typedef struct s_lst_check
 # define S_WIDTH 1200.0
 # define S_HEIGHT 700.0
 # define CAM_SHIFT 2.0/S_WIDTH
-# define texWidth 64
-# define texHeight 64
 # define UP 122
 # define LEFT 113
 # define RIGHT 100
 # define DOWN 115
 # define R_ROT 65363
 # define L_ROT 65361
+# define XPM_WIDTH 64
+# define XPM_HEIGHT 64
 
 void	file_handler(t_fd_read *fdres, char *file_name);
 
@@ -165,8 +164,7 @@ void	map_scanning(t_fd_read *fdres, int i, int j);
 void	last_carac_checker(t_fd_read *fdres, int i, int j);
 void	first_carac_checker(t_fd_read *fdres, int i);
 
-void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult);
-void	cp_char_array_multiply(char ***dest, char **src, int mult);
+void	var_plyer_init(t_vars *var, t_fd_read *fdres);
 void	initfdres(t_fd_read *fdres);
 
 int		key_press(int key, t_vars *var);
@@ -179,7 +177,7 @@ void	draw_vector(t_vars *var, int index, int vect);
 
 int		max_height(int status, int value);
 int		max_width(int status, int value);
-void	get_textures(t_vars *var);
+void	get_textures(t_fd_read *fdres, t_vars *var);
 
 void	cube_drawing(t_vars *var, int x, int y, int color);
 void	minimap(t_vars *var);

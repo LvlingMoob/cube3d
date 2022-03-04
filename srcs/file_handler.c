@@ -12,6 +12,62 @@
 
 #include "cube.h"
 
+int	max_len_in_array(char **array)
+{
+	int	i;
+	int	tmp;
+	int	len;
+
+	i = 0;
+	len = 0;
+	while (array[i])
+	{
+		tmp = ft_strlen(array[i]);
+		if (tmp > len)
+			len = tmp;
+		i++;
+	}
+	return (len);
+}
+
+void	norminette_bs(char ***dest, char **src, int *empty, int *max_len)
+{
+	int	i;
+
+	i = 0;
+	(*max_len) = max_len_in_array(src);
+	while (empty_line(src[(*empty)]))
+		(*empty) += 1;
+	while (src[(*empty) + i])
+		i++;
+	(*dest) = ft_calloc(i + 1, sizeof(char *));
+}
+
+void	cp_char_array_with_filler(char ***dest, char **src, int i)
+{
+	int		diff;
+	int		empty;
+	int		max_len;
+	char	*filler;
+	char	*swap;
+
+	norminette_bs(dest, src, &empty, &max_len);
+	while (src[empty + i] && !empty_line(src[empty + i]))
+	{
+		diff = max_len - ft_strlen(src[empty + i]);
+		filler = ft_calloc(diff + 1, sizeof(char));
+		diff--;
+		while (diff >= 0)
+		{
+			filler[diff] = 32;
+			diff--;
+		}
+		(*dest)[i] = ft_strjoin(src[empty + i], filler);
+		free(filler);
+		i++;
+	}
+}
+
 void	init_var_file_checker(char ***content, char **file_content)
 {
 	*content = ft_split(*file_content, '\n');
@@ -32,7 +88,7 @@ void	wrong_value_exit(t_fd_read *fdres, char ***content, int l, int i)
 
 void	map_cpy_and_free_content(t_fd_read *fdres, char ***content, int i)
 {
-	cp_char_array(&fdres->map, &(*content)[i]);
+	cp_char_array_with_filler(&fdres->map, &(*content)[i], 0);
 	ft_free_char_array(*content);
 }
 
@@ -83,7 +139,7 @@ char	*str_char_cat(char *buf, char c)
 	return (str);
 }
 
-int	content_rewrite(char **file_content)
+void	content_rewrite(char **file_content)
 {
 	int	i;
 
@@ -95,10 +151,24 @@ int	content_rewrite(char **file_content)
 			(*file_content)[i] = 32;
 		i++;
 	}
+}
+
+int	file_is_cub(char *file_name)
+{
+	int	i;
+	int	len;
+
+	i = 0;
+	len = ft_strlen(file_name) - 1;
+	while (len + i > 0 && file_name[len + i]
+		&& file_name[len + i] != '.')
+		i--;
+	if (ft_strncmp(&file_name[len + i], ".cub", 4))
+		return (0);
 	return (1);
 }
 
-char	*open_and_read(char *file_name)
+char	*open_and_read(t_fd_read *fdres, char *file_name)
 {
 	int		fd;
 	char	c;
@@ -106,10 +176,11 @@ char	*open_and_read(char *file_name)
 
 	file_content = ft_calloc(1, sizeof(char));
 	fd = open(file_name, O_RDONLY);
-	if (fd < 0)
+	if (fd < 0 || !file_is_cub(file_name))
 	{
+		free(file_content);
 		printf("%s\n", strerror(errno));
-		exit(1);
+		free_and_quit(fdres, 1);
 	}
 	while (read(fd, &c, 1) > 0)
 		file_content = str_char_cat(file_content, c);
@@ -121,12 +192,8 @@ void	file_handler(t_fd_read *fdres, char *file_name)
 {
 	char	*file_content;
 
-	file_content = open_and_read(file_name);
-	if (!content_rewrite(&file_content))
-	{
-		free(file_content);
-		free_and_quit(fdres, 1);
-	}
+	file_content = open_and_read(fdres, file_name);
+	content_rewrite(&file_content);
 	file_checker(fdres, &file_content, 0, 0);
 	map_checker(fdres);
 	if (!player_set(GET))

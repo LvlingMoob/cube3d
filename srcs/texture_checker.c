@@ -34,23 +34,26 @@ int	digit_value_checker(char *values)
 
 int	final_check_walls(t_fd_read *fdres, char *line, int l, int to_value)
 {
-	int	i;
-	int	j;
-	int	strstart;
+	int		i;
+	int		j;
+	int		strstart;
+	char	*tmp;
 
 	i = init_i(line, 2);
 	strstart = i;
 	i += start_line_checker(&line[i], &j, l);
 	if (!end_line_checker(&line[i], l))
 		return (0);
+	tmp = ft_strdup(&line[strstart + j]);
 	if (to_value == NO)
-		fdres->no = ft_strdup(&line[strstart + j]);
+		fdres->no = ft_strtrim(tmp, " ");
 	else if (to_value == SO)
-		fdres->so = ft_strdup(&line[strstart + j]);
+		fdres->so = ft_strtrim(tmp, " ");
 	else if (to_value == WE)
-		fdres->we = ft_strdup(&line[strstart + j]);
+		fdres->we = ft_strtrim(tmp, " ");
 	else if (to_value == EA)
-		fdres->ea = ft_strdup(&line[strstart + j]);
+		fdres->ea = ft_strtrim(tmp, " ");
+	free(tmp);
 	return (1);
 }
 

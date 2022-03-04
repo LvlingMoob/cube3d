@@ -22,13 +22,12 @@ int	main(int argc, char **argv)
 		return (1);
 	initfdres(&fdres);
 	file_handler(&fdres, argv[1]);
-	var.scale = 16;
-	var_plyer_init(&var, &fdres, var.scale);
+	var_plyer_init(&var, &fdres);
 	var.img = &img;
 	var.mlx = mlx_init();
 	var.win = mlx_new_window(var.mlx, S_WIDTH, S_HEIGHT, "Cube3D");
 	img.img = mlx_new_image(var.mlx, S_WIDTH, S_HEIGHT);
-	get_textures(&var);
+	get_textures(&fdres, &var);
 	free_and_quit(&fdres, 0);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 			&img.line_length, &img.endian);

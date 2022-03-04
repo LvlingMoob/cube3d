@@ -88,7 +88,7 @@ void	get_start_orientation(t_vars *var, char c)
 	initial_orientation_set_up(var);
 }
 
-void	var_plyer_init(t_vars *var, t_fd_read *fdres, int mult)
+void	var_plyer_init(t_vars *var, t_fd_read *fdres)
 {
 	int	i;
 	int	j;

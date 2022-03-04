@@ -14,6 +14,7 @@ FLAGS		= -I/usr/include -Iheaders -Imlx_linux -O3 -c
 FLAGSSUP	= -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 SRCFILE		=	./srcs/
+PRSFILE		=	./parsing/
 
 SRCS		=	${SRCFILE}main.c\
 				${SRCFILE}file_handler.c\

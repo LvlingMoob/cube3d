@@ -96,35 +96,59 @@ void	set_texture(t_ray *cast, t_vars *var)
 	else
 		cast->wallx = cast->posx + cast->perpwalldist * cast->raydirx;
 	cast->wallx -= floor((cast->wallx));
-	cast->texx = (int)(cast->wallx * (double)(texWidth));
+	cast->texx = (int)(cast->wallx * (double)(XPM_WIDTH));
 	if (cast->side == 0 && cast->raydirx > 0)
-		cast->texx = texWidth - cast->texx - 1;
+		cast->texx = XPM_WIDTH - cast->texx - 1;
 	if (cast->side == 1 && cast->raydiry < 0)
-		cast->texx = texWidth - cast->texx - 1;
-	cast->step = 1.0 * texHeight / cast->lineheight;
+		cast->texx = XPM_WIDTH - cast->texx - 1;
+	cast->step = 1.0 * XPM_HEIGHT / cast->lineheight;
 	cast->texpos = (cast->drawstart - cast->pitch
 			- S_HEIGHT / 2 + cast->lineheight / 2) * cast->step;
 }
 
-void	draw(t_ray *cast, t_vars *var, int x)
+void	draw_ceiling(t_ray *cast, t_vars *var, int x)
+{
+	int	i;
+
+	i = 0;
+	while (i < cast->drawstart + cast->pitch)
+	{
+		my_mlx_pixel_put(var->img, x, i,
+			create_trgb(255,
+				var->ceiling[0], var->ceiling[1], var->ceiling[2]));
+		i++;
+	}
+}
+
+void	draw_floor(t_ray *cast, t_vars *var, int x)
+{
+	while (cast->drawstart < S_HEIGHT)
+	{
+		my_mlx_pixel_put(var->img, x, cast->drawstart,
+			create_trgb(255, var->floor[0], var->floor[1], var->floor[2]));
+		cast->drawstart++;
+	}
+}
+
+void	draw_wall(t_ray *cast, t_vars *var, int x)
 {
 	while (cast->drawstart < cast->drawend)
 	{
-		cast->texy = (int)cast->texpos & (texHeight - 1);
+		cast->texy = (int)cast->texpos & (XPM_HEIGHT - 1);
 		cast->texpos += cast->step;
 		if (cast->side)
 		{
 			if (cast->stepy == 1)
-				cast->color = var->fd_ea[texHeight * cast->texy + cast->texx];
+				cast->color = var->fd_ea[XPM_HEIGHT * cast->texy + cast->texx];
 			else
-				cast->color = var->fd_we[texHeight * cast->texy + cast->texx];
+				cast->color = var->fd_we[XPM_HEIGHT * cast->texy + cast->texx];
 		}
 		else if (!cast->side)
 		{
 			if (cast->stepx == 1)
-				cast->color = var->fd_so[texHeight * cast->texy + cast->texx];
+				cast->color = var->fd_so[XPM_HEIGHT * cast->texy + cast->texx];
 			else
-				cast->color = var->fd_no[texHeight * cast->texy + cast->texx];
+				cast->color = var->fd_no[XPM_HEIGHT * cast->texy + cast->texx];
 		}
 		else
 			cast->color = 0x0FFFFFF;
@@ -152,27 +176,15 @@ void	rayscasting(t_vars *var)
 		perform_dda(&cast, var);
 		set_drawing_area(&cast, var);
 		set_texture(&cast, var);
-		draw(&cast, var, x);
+		draw_ceiling(&cast, var, x);
+		draw_wall(&cast, var, x);
+		draw_floor(&cast, var, x);
 		x++;
 	}
 }
 
 int	render_next_frame(t_vars *var)
 {
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < S_WIDTH)
-	{
-		j = 0;
-		while (j < S_HEIGHT)
-		{
-			my_mlx_pixel_put(var->img, i, j, 0x00000000);
-			j++;
-		}
-		i++;
-	}
 	rayscasting(var);
 	minimap(var);
 	plyrpos(var);
