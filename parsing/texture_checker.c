@@ -12,28 +12,34 @@
 
 #include "cube.h"
 
-int	digit_value_checker(char *values)
+static int	digit_value_checker(char *values)
 {
 	int		i;
+	int		j;
 	int		coma;
 
 	i = 0;
+	j = 0;
 	coma = 0;
 	while (values[i])
 	{
 		if (values[i] == ',')
+		{
+			j = 0;
 			coma++;
-		else if (!ft_isdigit(values[i]) && values[i] != 32)
+		}
+		else if ((!ft_isdigit(values[i]) && values[i] != 32)
+			|| (j > 3 && values[i] && values[i] != 32))
 			return (0);
 		i++;
+		j++;
 	}
-	// ici verif si chiffre < 3
 	if (coma > 2)
 		return (-1);
 	return (1);
 }
 
-int	final_check_walls(t_fd_read *fdres, char *line, int l, int to_value)
+static int	final_check_walls(t_fd_read *fdres, char *line, int l, int to_value)
 {
 	int		i;
 	int		j;
@@ -58,7 +64,8 @@ int	final_check_walls(t_fd_read *fdres, char *line, int l, int to_value)
 	return (1);
 }
 
-int	floor_ceiling_digits_value_verif(t_fd_read *fdres, int l, int to_value)
+static int	floor_ceiling_digits_value_verif(t_fd_read *fdres,
+			int l, int to_value)
 {
 	int		ret;
 	char	*tmp;
@@ -81,7 +88,8 @@ int	floor_ceiling_digits_value_verif(t_fd_read *fdres, int l, int to_value)
 	return (1);
 }
 
-int	final_check_floor_ceiling(t_fd_read *fdres, char *line, int l, int to_value)
+static int	final_check_floor_ceiling(t_fd_read *fdres, char *line,
+			int l, int to_value)
 {
 	int	i;
 	int	j;

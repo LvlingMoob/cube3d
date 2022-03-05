@@ -8,27 +8,36 @@ CC			= clang
 
 RM			= rm -f
 
-#FLAGS		= -Wall -Werror -Wextra -I/usr/include -Iheaders -Imlx_linux -O3 -c
-FLAGS		= -I/usr/include -Iheaders -Imlx_linux -O3 -c
+FLAGS		= -Wall -Werror -Wextra -I/usr/include -Iheaders -Imlx_linux -O3 -c
+#FLAGS		= -I/usr/include -Iheaders -Imlx_linux -O3 -c
 
 FLAGSSUP	= -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 SRCFILE		=	./srcs/
-UTIFILE		=	./utils/
+UTLFILE		=	./utils/
 PRSFILE		=	./parsing/
 
-SRCS		=	${SRCFILE}main.c\
-				${SRCFILE}file_handler.c\
-				${SRCFILE}texture_checker.c\
-				${SRCFILE}map_checker.c\
+SRCS		=	${SRCFILE}drawing.c\
 				${SRCFILE}init_str.c\
-				${SRCFILE}ft_minilibx.c\
-				${SRCFILE}ft_check.c\
-				${SRCFILE}ft_color.c\
-				${SRCFILE}render.c\
+				${SRCFILE}key_press.c\
+				${SRCFILE}main.c\
 				${SRCFILE}minimap.c\
-				${SRCFILE}free.c\
-				${SRCFILE}utils.c\
+				${SRCFILE}mvt.c\
+				${SRCFILE}raycast.c\
+				${SRCFILE}render.c\
+				${SRCFILE}scren_pos.c\
+				${SRCFILE}srcs_utils.c\
+				${UTLFILE}free.c\
+				${UTLFILE}ft_color.c\
+				${UTLFILE}utils.c\
+				${PRSFILE}file_checker.c\
+				${PRSFILE}file_handler.c\
+				${PRSFILE}ft_check.c\
+				${PRSFILE}get_textures.c\
+				${PRSFILE}parse_utils.c\
+				${PRSFILE}texture_checker.c\
+				${PRSFILE}texture_utils.c\
+				${PRSFILE}xpm_checker.c\
 
 OBJ		= 		${SRCS:.c=.o}
 
@@ -53,6 +62,6 @@ re:	fclean all
 rebonus: fclean bonus
 
 norme :
-	norminette $(SRCFILE) $(UTIFILE) $(PRSFILE)
+	norminette $(SRCFILE) $(UTIFILE) $(PRSFILE) $(HEADERSFILE)
 
 .PHONY:	all clean fclean re rebonus prog bonus norme

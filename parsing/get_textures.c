@@ -12,7 +12,7 @@
 
 #include "cube.h"
 
-void	fdno_init(t_fd_read *fdres, t_vars *var, int width, int height)
+static void	fdno_init(t_fd_read *fdres, t_vars *var, int width, int height)
 {
 	var->hiero = mlx_xpm_file_to_image(var->mlx, fdres->no,
 			&width, &height);
@@ -22,7 +22,7 @@ void	fdno_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&var->img->line_length, &var->img->endian);
 }
 
-void	fdso_init(t_fd_read *fdres, t_vars *var, int width, int height)
+static void	fdso_init(t_fd_read *fdres, t_vars *var, int width, int height)
 {
 	var->world = mlx_xpm_file_to_image(var->mlx, fdres->so,
 			&width, &height);
@@ -38,7 +38,7 @@ void	fdso_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&var->img->line_length, &var->img->endian);
 }
 
-void	fdwe_init(t_fd_read *fdres, t_vars *var, int width, int height)
+static void	fdwe_init(t_fd_read *fdres, t_vars *var, int width, int height)
 {
 	var->chariot = mlx_xpm_file_to_image(var->mlx, fdres->we,
 			&width, &height);
@@ -52,7 +52,7 @@ void	fdwe_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&var->img->line_length, &var->img->endian);
 }
 
-void	fdea_init(t_fd_read *fdres, t_vars *var, int width, int height)
+static void	fdea_init(t_fd_read *fdres, t_vars *var, int width, int height)
 {
 	var->hermit = mlx_xpm_file_to_image(var->mlx, fdres->ea,
 			&width, &height);

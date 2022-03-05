@@ -12,6 +12,32 @@
 
 #include "cube.h"
 
+static void	initial_orientation_set_up(t_vars *var)
+{
+	if (var->plyer->orientation > 90 && var->plyer->orientation < 270)
+		look_up(var);
+	if ((var->plyer->orientation > 270 && var->plyer->orientation <= 360)
+		|| (var->plyer->orientation >= 0 && var->plyer->orientation < 90))
+		look_down(var);
+	if (var->plyer->orientation > 0 && var->plyer->orientation < 180)
+		look_right(var);
+	if (var->plyer->orientation > 180 && var->plyer->orientation < 360)
+		look_left(var);
+}
+
+static void	get_start_orientation(t_vars *var, char c)
+{
+	if (c == 'N')
+		var->plyer->orientation = 180;
+	else if (c == 'S')
+		var->plyer->orientation = 0;
+	else if (c == 'W')
+		var->plyer->orientation = 270;
+	else if (c == 'E')
+		var->plyer->orientation = 90;
+	initial_orientation_set_up(var);
+}
+
 void	floor_and_ceiling_init(t_fd_read *fdres, t_vars *var)
 {
 	char	**ftmp;
@@ -45,32 +71,6 @@ void	initfdres(t_fd_read *fdres)
 	fdres->f = NULL;
 	fdres->c = NULL;
 	fdres->map = NULL;
-}
-
-void	initial_orientation_set_up(t_vars *var)
-{
-	if (var->plyer->orientation > 90 && var->plyer->orientation < 270)
-		look_up(var);
-	if ((var->plyer->orientation > 270 && var->plyer->orientation <= 360)
-		|| (var->plyer->orientation >= 0 && var->plyer->orientation < 90))
-		look_down(var);
-	if (var->plyer->orientation > 0 && var->plyer->orientation < 180)
-		look_right(var);
-	if (var->plyer->orientation > 180 && var->plyer->orientation < 360)
-		look_left(var);
-}
-
-void	get_start_orientation(t_vars *var, char c)
-{
-	if (c == 'N')
-		var->plyer->orientation = 180;
-	else if (c == 'S')
-		var->plyer->orientation = 0;
-	else if (c == 'W')
-		var->plyer->orientation = 270;
-	else if (c == 'E')
-		var->plyer->orientation = 90;
-	initial_orientation_set_up(var);
 }
 
 void	var_plyer_init(t_vars *var, t_fd_read *fdres)

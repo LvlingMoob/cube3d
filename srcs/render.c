@@ -12,7 +12,7 @@
 
 #include "cube.h"
 
-void	set_drawing_area(t_ray *cast, t_vars *var)
+void	set_drawing_area(t_ray *cast)
 {
 	if (cast->side == 0)
 		cast->perpwalldist = (cast->sidedistx - cast->deltadistx);
@@ -27,7 +27,7 @@ void	set_drawing_area(t_ray *cast, t_vars *var)
 		cast->drawend = S_HEIGHT - 1;
 }
 
-void	set_texture(t_ray *cast, t_vars *var)
+void	set_texture(t_ray *cast)
 {
 	if (cast->side == 0)
 		cast->wallx = cast->posy + cast->perpwalldist * cast->raydiry;

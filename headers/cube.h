@@ -101,10 +101,10 @@ typedef struct s_vars {
 	int		*fd_ea;
 	int		floor[3];
 	int		ceiling[3];
-	double	dirX;
-	double	dirY;
-	double	planeX;
-	double	planeY;
+	double	dirx;
+	double	diry;
+	double	planex;
+	double	planey;
 }				t_vars;
 
 typedef struct s_fd_read
@@ -128,7 +128,6 @@ typedef struct s_lst_check
 
 # define S_WIDTH 1200.0
 # define S_HEIGHT 700.0
-# define CAM_SHIFT 2.0/S_WIDTH
 # define UP 122
 # define LEFT 113
 # define RIGHT 100
@@ -138,56 +137,106 @@ typedef struct s_lst_check
 # define XPM_WIDTH 64
 # define XPM_HEIGHT 64
 
+/*PARSING --------------------------------------------------------------------*/
+/* ************************************************************************** */
+
+// FILE_CHECKER.C
+void	file_checker(t_fd_read *fdres, char **file_content, int i, int l);
+
+// FILE_HANDLER.C
 void	file_handler(t_fd_read *fdres, char *file_name);
 
-void	free_and_quit(t_fd_read *fdres, int quit);
-void	ft_free_char_array(char **char_array);
-int		close_img_win(t_vars *var);
-
-void	err_print(t_fd_read *fdres, char *expected_value, int l);
-int		end_line_checker(char *line, int l);
-int		start_line_checker(char *line, int *j, int l);
-int		init_i(char *line, int start);
-void	cp_char_array(char ***dest, char **src);
-int		empty_line(char *line);
-int		authorized_char(char c);
-char	*str_char_cat(char *buf, char c);
-int		player_set(int status);
-
-int		fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
-
-void	map_checker(t_fd_read *fdres);
-
+// FT_CHECK.C
 void	first_last_line_checker(t_fd_read *fdres, int i);
 void	space_checker(t_fd_read *fdres, int i, int j);
 void	map_scanning(t_fd_read *fdres, int i, int j);
 void	last_carac_checker(t_fd_read *fdres, int i, int j);
 void	first_carac_checker(t_fd_read *fdres, int i);
 
-void	var_plyer_init(t_vars *var, t_fd_read *fdres);
-void	initfdres(t_fd_read *fdres);
-
-int		key_press(int key, t_vars *var);
-int		render_next_frame(t_vars *var);
-
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-void	draw_map(t_vars *var);
-void	ray_cast(t_vars *var, int index, int vect);
-void	draw_vector(t_vars *var, int index, int vect);
-
-int		max_height(int status, int value);
-int		max_width(int status, int value);
+// GET_TEXTURES.C
 void	get_textures(t_fd_read *fdres, t_vars *var);
 
-void	cube_drawing(t_vars *var, int x, int y, int color);
-void	minimap(t_vars *var);
+// PARSE_UTILS.C
+char	*str_char_cat(char *buf, char c);
+int		max_len_in_array(char **array);
+int		file_is_cub(char *file_name);
+void	cp_char_array_with_filler(char ***dest, char **src, int i);
+
+// TEXTURE_CHECKER.C
+int		fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
+
+// TEXTURE_UTILS.C
+int		end_line_checker(char *line, int l);
+int		start_line_checker(char *line, int *j, int l);
+int		init_i(char *line, int start);
+
+// XPM_CHECKER.C
+void	xpm_size_checker(t_fd_read *fdres, t_vars *var);
+void	err_on_xpm_exit(t_fd_read *fdres, t_vars *var);
+
+/*SRCS -----------------------------------------------------------------------*/
+/* ************************************************************************** */
+
+// DRAWING.C
+void	draw_wall(t_ray *cast, t_vars *var, int x);
+void	draw_floor(t_ray *cast, t_vars *var, int x);
+void	draw_ceiling(t_ray *cast, t_vars *var, int x);
+
+// INIT_STR.C
+void	var_plyer_init(t_vars *var, t_fd_read *fdres);
+void	initfdres(t_fd_read *fdres);
+void	floor_and_ceiling_init(t_fd_read *fdres, t_vars *var);
+
+// KEY_PRESS.C
+int		key_press(int key, t_vars *var);
+
+// MINIMAP.C
 void	plyrpos(t_vars *var);
+void	minimap(t_vars *var);
 
-int	create_trgb(int t, int r, int g, int b);
-int	get_t(int trgb);
-int	get_r(int trgb);
-int	get_g(int trgb);
-int	get_b(int trgb);
+// MVT.C
+void	strafe_right(t_key key_var, t_vars *var);
+void	strafe_left(t_key key_var, t_vars *var);
+void	down(t_key key_var, t_vars *var);
+void	up(t_key key_var, t_vars *var);
 
+// RAYCAST.C
+void	rayscasting(t_vars *var);
+
+// RENDER.C
+int		render_next_frame(t_vars *var);
+void	set_texture(t_ray *cast);
+void	set_drawing_area(t_ray *cast);
+
+// SCREEN_POS.C
+void	look_left(t_vars *var);
+void	look_right(t_vars *var);
+void	look_down(t_vars *var);
+void	look_up(t_vars *var);
+
+// SRCS_UTILS.C
+void	cp_char_array(char ***dest, char **src);
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+
+/*UTILS ----------------------------------------------------------------------*/
+/* ************************************************************************** */
+
+// FREE.C
+void	free_and_quit(t_fd_read *fdres, int quit);
+void	ft_free_char_array(char **char_array);
+int		close_img_win(t_vars *var);
+
+// FT_COLOR.C
+int		get_b(int trgb);
+int		get_g(int trgb);
+int		get_r(int trgb);
+int		get_t(int trgb);
+int		create_trgb(int t, int r, int g, int b);
+
+// UTILS.C
+void	err_print(t_fd_read *fdres, char *expected_value, int l);
+int		empty_line(char *line);
+int		authorized_char(char c);
+int		player_set(int status);
 
 #endif

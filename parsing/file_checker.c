@@ -12,25 +12,25 @@
 
 #include "cube.h"
 
-void	init_var_file_checker(char ***content, char **file_content)
+static void	init_var_file_checker(char ***content, char **file_content)
 {
 	*content = ft_split(*file_content, '\n');
 	free(*file_content);
 }
 
-void	err_on_texture_exit(t_fd_read *fdres, char ***content)
+static void	err_on_texture_exit(t_fd_read *fdres, char ***content)
 {
 	ft_free_char_array(*content);
 	free_and_quit(fdres, 1);
 }
 
-void	wrong_value_exit(t_fd_read *fdres, char ***content, int l, int i)
+static void	wrong_value_exit(t_fd_read *fdres, char ***content, int l, int i)
 {
 	ft_free_char_array(*content);
 	err_print(fdres, fdres->values[l], i + 1);
 }
 
-void	map_cpy_and_free_content(t_fd_read *fdres, char ***content, int i)
+static void	map_cpy_and_free_content(t_fd_read *fdres, char ***content, int i)
 {
 	cp_char_array_with_filler(&fdres->map, &(*content)[i], 0);
 	ft_free_char_array(*content);

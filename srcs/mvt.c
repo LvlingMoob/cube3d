@@ -14,30 +14,30 @@
 
 void	up(t_key key_var, t_vars *var)
 {
-	if (var->map[(int)(var->plyer->x + var->dirX * key_var.movespeed)]
+	if (var->map[(int)(var->plyer->x + var->dirx * key_var.movespeed)]
 			[(int)(var->plyer->y)] == '0')
-		var->plyer->x += (float)(var->dirX * key_var.movespeed);
+		var->plyer->x += (float)(var->dirx * key_var.movespeed);
 	if (var->map[(int)(var->plyer->x)]
-			[(int)(var->plyer->y + var->dirY * key_var.movespeed)] == '0')
-		var->plyer->y += (float)(var->dirY * key_var.movespeed);
+			[(int)(var->plyer->y + var->diry * key_var.movespeed)] == '0')
+		var->plyer->y += (float)(var->diry * key_var.movespeed);
 }
 
 void	down(t_key key_var, t_vars *var)
 {
-	if (var->map[(int)(var->plyer->x - var->dirX * key_var.movespeed)]
+	if (var->map[(int)(var->plyer->x - var->dirx * key_var.movespeed)]
 			[(int)(var->plyer->y)] == '0')
-		var->plyer->x -= var->dirX * key_var.movespeed;
+		var->plyer->x -= var->dirx * key_var.movespeed;
 	if (var->map[(int)(var->plyer->x)]
-			[(int)(var->plyer->y - var->dirY * key_var.movespeed)] == '0')
-		var->plyer->y -= var->dirY * key_var.movespeed;
+			[(int)(var->plyer->y - var->diry * key_var.movespeed)] == '0')
+		var->plyer->y -= var->diry * key_var.movespeed;
 }
 
 void	strafe_left(t_key key_var, t_vars *var)
 {
-	key_var.tmpdirx = var->dirX * cos(90 * (M_PI / 180))
-		- var->dirY * sin(90 * (M_PI / 180));
+	key_var.tmpdirx = var->dirx * cos(90 * (M_PI / 180))
+		- var->diry * sin(90 * (M_PI / 180));
 	key_var.tmpdiry = key_var.olddirx * sin(90 * (M_PI / 180))
-		+ var->dirY * cos(90 * (M_PI / 180));
+		+ var->diry * cos(90 * (M_PI / 180));
 	if (var->map[(int)(var->plyer->x + key_var.tmpdirx * key_var.movespeed)]
 			[(int)(var->plyer->y)] == '0')
 		var->plyer->x += (float)(key_var.tmpdirx * key_var.movespeed);
@@ -48,10 +48,10 @@ void	strafe_left(t_key key_var, t_vars *var)
 
 void	strafe_right(t_key key_var, t_vars *var)
 {
-	key_var.tmpdirx = var->dirX * cos(-90 * (M_PI / 180))
-		- var->dirY * sin(-90 * (M_PI / 180));
+	key_var.tmpdirx = var->dirx * cos(-90 * (M_PI / 180))
+		- var->diry * sin(-90 * (M_PI / 180));
 	key_var.tmpdiry = key_var.olddirx * sin(-90 * (M_PI / 180))
-		+ var->dirY * cos(-90 * (M_PI / 180));
+		+ var->diry * cos(-90 * (M_PI / 180));
 	if (var->map[(int)(var->plyer->x + key_var.tmpdirx * key_var.movespeed)]
 			[(int)(var->plyer->y)] == '0')
 		var->plyer->x += (float)(key_var.tmpdirx * key_var.movespeed);

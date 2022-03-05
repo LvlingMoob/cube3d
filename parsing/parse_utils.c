@@ -12,13 +12,25 @@
 
 #include "cube.h"
 
+static void	norminette_bs(char ***dest, char **src, int *empty, int *max_len)
+{
+	int	i;
+
+	i = 0;
+	(*max_len) = max_len_in_array(src);
+	while (empty_line(src[(*empty)]))
+		(*empty) += 1;
+	while (src[(*empty) + i])
+		i++;
+	(*dest) = ft_calloc(i + 1, sizeof(char *));
+}
+
 void	cp_char_array_with_filler(char ***dest, char **src, int i)
 {
 	int		diff;
 	int		empty;
 	int		max_len;
 	char	*filler;
-	char	*swap;
 
 	norminette_bs(dest, src, &empty, &max_len);
 	while (src[empty + i] && !empty_line(src[empty + i]))
@@ -88,18 +100,4 @@ char	*str_char_cat(char *buf, char c)
 	str[buflen + 1] = '\0';
 	free(buf);
 	return (str);
-}
-
-void	content_rewrite(char **file_content)
-{
-	int	i;
-
-	i = 0;
-	while ((*file_content)[i])
-	{
-		if ((*file_content)[i] > 0 && (*file_content)[i] < 32
-			&& (*file_content)[i] != '\n')
-			(*file_content)[i] = 32;
-		i++;
-	}
 }

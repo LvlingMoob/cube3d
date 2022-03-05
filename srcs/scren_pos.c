@@ -14,32 +14,32 @@
 
 void	look_up(t_vars *var)
 {
-	var->dirX = -1;
-	var->dirY = 0;
-	var->planeX = 0.0;
-	var->planeY = 0.66;
+	var->dirx = -1;
+	var->diry = 0;
+	var->planex = 0.0;
+	var->planey = 0.66;
 }
 
 void	look_down(t_vars *var)
 {
-	var->dirX = 1;
-	var->dirY = 0;
-	var->planeX = 0;
-	var->planeY = -0.66;
+	var->dirx = 1;
+	var->diry = 0;
+	var->planex = 0;
+	var->planey = -0.66;
 }
 
 void	look_right(t_vars *var)
 {
-	var->dirY = 1;
-	var->dirX = 0;
-	var->planeX = 0.66;
-	var->planeY = 0;
+	var->diry = 1;
+	var->dirx = 0;
+	var->planex = 0.66;
+	var->planey = 0;
 }
 
 void	look_left(t_vars *var)
 {
-	var->dirY = -1;
-	var->dirX = 0;
-	var->planeX = -0.66;
-	var->planeY = 0;
+	var->diry = -1;
+	var->dirx = 0;
+	var->planex = -0.66;
+	var->planey = 0;
 }

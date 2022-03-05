@@ -12,20 +12,21 @@
 
 #include "cube.h"
 
-void	norminette_bs(char ***dest, char **src, int *empty, int *max_len)
+static void	content_rewrite(char **file_content)
 {
 	int	i;
 
 	i = 0;
-	(*max_len) = max_len_in_array(src);
-	while (empty_line(src[(*empty)]))
-		(*empty) += 1;
-	while (src[(*empty) + i])
+	while ((*file_content)[i])
+	{
+		if ((*file_content)[i] > 0 && (*file_content)[i] < 32
+			&& (*file_content)[i] != '\n')
+			(*file_content)[i] = 32;
 		i++;
-	(*dest) = ft_calloc(i + 1, sizeof(char *));
+	}
 }
 
-char	*open_and_read(t_fd_read *fdres, char *file_name)
+static char	*open_and_read(t_fd_read *fdres, char *file_name)
 {
 	int		fd;
 	char	c;
@@ -45,7 +46,7 @@ char	*open_and_read(t_fd_read *fdres, char *file_name)
 	return (file_content);
 }
 
-void	map_checker(t_fd_read *fdres)
+static void	map_checker(t_fd_read *fdres)
 {
 	int	i;
 	int	j;

@@ -12,36 +12,36 @@
 
 #include "cube.h"
 
-void	key_var_init(t_key *key_var, t_vars *var)
+static void	key_var_init(t_key *key_var, t_vars *var)
 {
-	key_var->olddirx = var->dirX;
-	key_var->oldplanex = var->planeX;
+	key_var->olddirx = var->dirx;
+	key_var->oldplanex = var->planex;
 	key_var->rotspeed = 2 * (M_PI / 180);
 	key_var->movespeed = 0.1;
 }
 
-void	turn_left(t_key key_var, t_vars *var)
+static void	turn_left(t_key key_var, t_vars *var)
 {
-	var->dirX = var->dirX * cos(key_var.rotspeed)
-		- var->dirY * sin(key_var.rotspeed);
-	var->dirY = key_var.olddirx * sin(key_var.rotspeed)
-		+ var->dirY * cos(key_var.rotspeed);
-	var->planeX = var->planeX * cos(key_var.rotspeed)
-		- var->planeY * sin(key_var.rotspeed);
-	var->planeY = key_var.oldplanex * sin(key_var.rotspeed)
-		+ var->planeY * cos(key_var.rotspeed);
+	var->dirx = var->dirx * cos(key_var.rotspeed)
+		- var->diry * sin(key_var.rotspeed);
+	var->diry = key_var.olddirx * sin(key_var.rotspeed)
+		+ var->diry * cos(key_var.rotspeed);
+	var->planex = var->planex * cos(key_var.rotspeed)
+		- var->planey * sin(key_var.rotspeed);
+	var->planey = key_var.oldplanex * sin(key_var.rotspeed)
+		+ var->planey * cos(key_var.rotspeed);
 }
 
-void	turn_right(t_key key_var, t_vars *var)
+static void	turn_right(t_key key_var, t_vars *var)
 {
-	var->dirX = var->dirX * cos(-key_var.rotspeed)
-		- var->dirY * sin(-key_var.rotspeed);
-	var->dirY = key_var.olddirx * sin(-key_var.rotspeed)
-		+ var->dirY * cos(-key_var.rotspeed);
-	var->planeX = var->planeX * cos(-key_var.rotspeed)
-		- var->planeY * sin(-key_var.rotspeed);
-	var->planeY = key_var.oldplanex * sin(-key_var.rotspeed)
-		+ var->planeY * cos(-key_var.rotspeed);
+	var->dirx = var->dirx * cos(-key_var.rotspeed)
+		- var->diry * sin(-key_var.rotspeed);
+	var->diry = key_var.olddirx * sin(-key_var.rotspeed)
+		+ var->diry * cos(-key_var.rotspeed);
+	var->planex = var->planex * cos(-key_var.rotspeed)
+		- var->planey * sin(-key_var.rotspeed);
+	var->planey = key_var.oldplanex * sin(-key_var.rotspeed)
+		+ var->planey * cos(-key_var.rotspeed);
 }
 
 int	key_press(int key, t_vars *var)

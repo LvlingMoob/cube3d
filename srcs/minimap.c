@@ -12,7 +12,7 @@
 
 #include "cube.h"
 
-void	cube_drawing(t_vars *var, int x, int y, int color)
+static void	cube_drawing(t_vars *var, int x, int y, int color)
 {
 	int	i;
 	int	j;

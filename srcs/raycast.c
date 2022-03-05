@@ -12,11 +12,13 @@
 
 #include "cube.h"
 
-void	cam_orientation_setup(t_ray *cast, t_vars *var, int x)
+static void	cam_orientation_setup(t_ray *cast, t_vars *var, int x)
 {
-	cast->camerax = -1 + (x * CAM_SHIFT);
-	cast->raydirx = var->dirX + var->planeX * cast->camerax;
-	cast->raydiry = var->dirY + var->planeY * cast->camerax;
+	static const double	cam_shift = 2.0 / S_WIDTH;
+
+	cast->camerax = -1 + (x * cam_shift);
+	cast->raydirx = var->dirx + var->planex * cast->camerax;
+	cast->raydiry = var->diry + var->planey * cast->camerax;
 	cast->mapx = (int)cast->posx;
 	cast->mapy = (int)cast->posy;
 	if (cast->raydirx == 0)
@@ -29,7 +31,7 @@ void	cam_orientation_setup(t_ray *cast, t_vars *var, int x)
 		cast->deltadisty = fabs((1 / cast->raydiry));
 }
 
-void	vector_step_setup(t_ray *cast, t_vars *var)
+static void	vector_step_setup(t_ray *cast)
 {
 	if (cast->raydirx < 0)
 	{
@@ -53,7 +55,7 @@ void	vector_step_setup(t_ray *cast, t_vars *var)
 	}
 }
 
-void	perform_dda(t_ray *cast, t_vars *var)
+static void	perform_dda(t_ray *cast, t_vars *var)
 {
 	while (cast->hit == 0)
 	{
@@ -87,10 +89,10 @@ void	rayscasting(t_vars *var)
 	{
 		cam_orientation_setup(&cast, var, x);
 		cast.hit = 0;
-		vector_step_setup(&cast, var);
+		vector_step_setup(&cast);
 		perform_dda(&cast, var);
-		set_drawing_area(&cast, var);
-		set_texture(&cast, var);
+		set_drawing_area(&cast);
+		set_texture(&cast);
 		draw_ceiling(&cast, var, x);
 		draw_wall(&cast, var, x);
 		draw_floor(&cast, var, x);
