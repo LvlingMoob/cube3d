@@ -62,6 +62,6 @@ re:	fclean all
 rebonus: fclean bonus
 
 norme :
-	norminette $(SRCFILE) $(UTIFILE) $(PRSFILE) $(HEADERSFILE)
+	norminette $(SRCFILE) $(UTLFILE) $(PRSFILE) $(HEADERSFILE)
 
 .PHONY:	all clean fclean re rebonus prog bonus norme
