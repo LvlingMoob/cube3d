@@ -32,6 +32,7 @@ void	cp_char_array_with_filler(char ***dest, char **src, int i)
 	int		max_len;
 	char	*filler;
 
+	empty = 0;
 	norminette_bs(dest, src, &empty, &max_len);
 	while (src[empty + i] && !empty_line(src[empty + i]))
 	{

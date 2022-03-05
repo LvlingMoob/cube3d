@@ -12,14 +12,11 @@
 
 #include "cube.h"
 
-static int	digit_value_checker(char *values)
+static int	digit_value_checker(char *values, int i, int j)
 {
-	int		i;
-	int		j;
+	int		ret;
 	int		coma;
 
-	i = 0;
-	j = 0;
 	coma = 0;
 	while (values[i])
 	{
@@ -28,9 +25,12 @@ static int	digit_value_checker(char *values)
 			j = 0;
 			coma++;
 		}
-		else if ((!ft_isdigit(values[i]) && values[i] != 32)
-			|| (j > 3 && values[i] && values[i] != 32))
-			return (0);
+		else
+		{
+			ret = digit_conditions_check(values, i, j);
+			if (ret <= 0)
+				return (ret);
+		}
 		i++;
 		j++;
 	}
@@ -75,14 +75,18 @@ static int	floor_ceiling_digits_value_verif(t_fd_read *fdres,
 		tmp = ft_strdup(fdres->f);
 	else if (to_value == C)
 		tmp = ft_strdup(fdres->c);
-	ret = digit_value_checker(tmp);
+	ret = digit_value_checker(tmp, 0, 0);
 	free(tmp);
 	if (ret <= 0)
 	{
-		if (ret < 0)
-			printf("l %d : error 3 numbers expected\n", l + 1);
-		else if (ret == 0)
+		if (ret == 0)
 			printf("l %d : error, only numbers expected\n", l + 1);
+		else if (ret == -2)
+			printf("l %d : error, 4 digits number\n", l + 1);
+		else if (ret == -3)
+			printf("l %d : error, negative value detected\n", l + 1);
+		else if (ret < 0)
+			printf("l %d : error 3 numbers expected\n", l + 1);
 		return (0);
 	}
 	return (1);

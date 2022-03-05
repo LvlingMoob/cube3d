@@ -140,6 +140,9 @@ typedef struct s_lst_check
 /*PARSING --------------------------------------------------------------------*/
 /* ************************************************************************** */
 
+// ERR_OUTPUT.C
+void	err_map(t_fd_read *fdres);
+
 // FILE_CHECKER.C
 void	file_checker(t_fd_read *fdres, char **file_content, int i, int l);
 
@@ -169,6 +172,7 @@ int		fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
 int		end_line_checker(char *line, int l);
 int		start_line_checker(char *line, int *j, int l);
 int		init_i(char *line, int start);
+int		digit_conditions_check(char *values, int i, int j);
 
 // XPM_CHECKER.C
 void	xpm_size_checker(t_fd_read *fdres, t_vars *var);

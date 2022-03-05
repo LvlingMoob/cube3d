@@ -12,6 +12,18 @@
 
 #include "cube.h"
 
+int	digit_conditions_check(char *values, int i, int j)
+{
+	if (values[i] == '-' && values[i + 1]
+		&& ft_isdigit(values[i + 1]) && i > 0 && values[i - 1] == ',')
+		return (-3);
+	else if ((!ft_isdigit(values[i]) && values[i] != 32))
+		return (0);
+	else if (j > 3 && values[i] && values[i] != 32)
+		return (-2);
+	return (1);
+}
+
 int	init_i(char *line, int start)
 {
 	int	i;

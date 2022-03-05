@@ -30,6 +30,7 @@ SRCS		=	${SRCFILE}drawing.c\
 				${UTLFILE}free.c\
 				${UTLFILE}ft_color.c\
 				${UTLFILE}utils.c\
+				${PRSFILE}err_output.c\
 				${PRSFILE}file_checker.c\
 				${PRSFILE}file_handler.c\
 				${PRSFILE}ft_check.c\
