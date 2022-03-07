@@ -45,6 +45,7 @@ void	floor_and_ceiling_init(t_fd_read *fdres, t_vars *var)
 
 	ftmp = ft_split(fdres->f, ',');
 	ctmp = ft_split(fdres->c, ',');
+	arrays_size_check(fdres, var, &ftmp, &ctmp);
 	var->floor[0] = ft_atoi(ftmp[0]);
 	var->floor[1] = ft_atoi(ftmp[1]);
 	var->floor[2] = ft_atoi(ftmp[2]);

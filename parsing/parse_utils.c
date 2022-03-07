@@ -25,7 +25,7 @@ static void	norminette_bs(char ***dest, char **src, int *empty, int *max_len)
 	(*dest) = ft_calloc(i + 1, sizeof(char *));
 }
 
-void	cp_char_array_with_filler(char ***dest, char **src, int i)
+void	cp_char_array_with_filler(char ***dest, char **src, int i, int *endmap)
 {
 	int		diff;
 	int		empty;
@@ -48,6 +48,7 @@ void	cp_char_array_with_filler(char ***dest, char **src, int i)
 		free(filler);
 		i++;
 	}
+	*endmap = empty + i;
 }
 
 int	file_is_cub(char *file_name)

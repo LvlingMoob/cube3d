@@ -18,7 +18,7 @@ static void	fdno_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&width, &height);
 	if (!var->hiero)
 	{
-		ft_putstr_fd("NO texture error", 2);
+		ft_putstr_fd("NO texture error\n", 2);
 		err_on_xpm_exit(fdres, var);
 	}
 	var->fd_no = (int *)mlx_get_data_addr(var->hiero, &var->img->bits_per_pixel,
@@ -31,7 +31,7 @@ static void	fdso_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&width, &height);
 	if (!var->world)
 	{
-		ft_putstr_fd("SO texture error", 2);
+		ft_putstr_fd("SO texture error\n", 2);
 		mlx_destroy_image(var->mlx, var->hermit);
 		mlx_destroy_image(var->mlx, var->chariot);
 		mlx_destroy_image(var->mlx, var->hiero);
@@ -48,7 +48,7 @@ static void	fdwe_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&width, &height);
 	if (!var->chariot)
 	{
-		ft_putstr_fd("WE texture error", 2);
+		ft_putstr_fd("WE texture error\n", 2);
 		mlx_destroy_image(var->mlx, var->hiero);
 		err_on_xpm_exit(fdres, var);
 	}
@@ -63,7 +63,7 @@ static void	fdea_init(t_fd_read *fdres, t_vars *var, int width, int height)
 			&width, &height);
 	if (!var->hermit)
 	{
-		ft_putstr_fd("EA texture error", 2);
+		ft_putstr_fd("EA texture error\n", 2);
 		mlx_destroy_image(var->mlx, var->chariot);
 		mlx_destroy_image(var->mlx, var->hiero);
 		err_on_xpm_exit(fdres, var);

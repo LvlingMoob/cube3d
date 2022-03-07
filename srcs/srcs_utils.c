@@ -12,6 +12,34 @@
 
 #include "cube.h"
 
+void	arrays_size_check(t_fd_read *fdres, t_vars *var,
+			char ***ar1, char ***ar2)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while ((*ar1)[i])
+		i++;
+	while ((*ar2)[j])
+		j++;
+	if (i != 3 || j != 3)
+	{
+		if (i != 3)
+			ft_putstr_fd("floor values : error 3 numbers expected\n", 2);
+		else
+			ft_putstr_fd("ceiling values : error 3 numbers expected\n", 2);
+		ft_free_char_array((*ar1));
+		ft_free_char_array((*ar2));
+		mlx_destroy_image(var->mlx, var->hermit);
+		mlx_destroy_image(var->mlx, var->chariot);
+		mlx_destroy_image(var->mlx, var->hiero);
+		mlx_destroy_image(var->mlx, var->world);
+		err_on_xpm_exit(fdres, var);
+	}
+}
+
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;

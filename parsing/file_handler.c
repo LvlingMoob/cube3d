@@ -29,9 +29,17 @@ static void	content_rewrite(char **file_content)
 static char	*open_and_read(t_fd_read *fdres, char *file_name)
 {
 	int		fd;
+	int		dirtest;
 	char	c;
 	char	*file_content;
 
+	dirtest = open(file_name, O_DIRECTORY);
+	if (dirtest > 2)
+	{
+		close(dirtest);
+		ft_putstr_fd("file is a directory\n", 2);
+		free_and_quit(fdres, 1);
+	}
 	file_content = ft_calloc(1, sizeof(char));
 	fd = open(file_name, O_RDONLY);
 	if (fd < 0 || !file_is_cub(file_name))

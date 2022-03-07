@@ -50,7 +50,7 @@ int	start_line_checker(char *line, int *j, int l)
 	if (!line[i])
 	{
 		printf("l %d : %s : error, empty lines\n", l, line);
-		return (0);
+		return (INT_MIN);
 	}
 	*j = i;
 	while (line[i] && !(line[i] > 0 && line[i] <= 32))

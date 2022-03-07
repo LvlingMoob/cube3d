@@ -42,9 +42,11 @@ int	authorized_char(char c)
 
 int	empty_line(char *line)
 {
+	if (!line)
+		return (1);
 	while (*line)
 	{
-		if (!(*line > 0 && *line <= 32))
+		if (!(*line >= 0 && *line <= 32))
 			return (0);
 		line++;
 	}

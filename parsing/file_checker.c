@@ -32,7 +32,19 @@ static void	wrong_value_exit(t_fd_read *fdres, char ***content, int l, int i)
 
 static void	map_cpy_and_free_content(t_fd_read *fdres, char ***content, int i)
 {
-	cp_char_array_with_filler(&fdres->map, &(*content)[i], 0);
+	int	endmap;
+
+	cp_char_array_with_filler(&fdres->map, &(*content)[i], 0, &endmap);
+	while ((*content)[endmap + i])
+	{
+		if (!empty_line((*content)[endmap + i]))
+		{
+			ft_putstr_fd("Error : unexpected value after map\n", 2);
+			ft_free_char_array(*content);
+			free_and_quit(fdres, 1);
+		}
+		i++;
+	}
 	ft_free_char_array(*content);
 }
 

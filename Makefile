@@ -1,4 +1,4 @@
-NAME		= cube
+NAME		= cub3D
 
 SRCFILE		= ./srcs/
 
@@ -9,7 +9,6 @@ CC			= clang
 RM			= rm -f
 
 FLAGS		= -Wall -Werror -Wextra -I/usr/include -Iheaders -Imlx_linux -O3 -c
-#FLAGS		= -I/usr/include -Iheaders -Imlx_linux -O3 -c
 
 FLAGSSUP	= -Llibft -lft -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 

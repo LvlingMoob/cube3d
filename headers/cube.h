@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <limits.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -175,7 +176,7 @@ void	get_textures(t_fd_read *fdres, t_vars *var);
 char	*str_char_cat(char *buf, char c);
 int		max_len_in_array(char **array);
 int		file_is_cub(char *file_name);
-void	cp_char_array_with_filler(char ***dest, char **src, int i);
+void	cp_char_array_with_filler(char ***dest, char **src, int i, int *endmap);
 
 // TEXTURE_CHECKER.C
 int		fill_texture_address_fdres(t_fd_read *fdres, char *line, int i, int l);
@@ -233,6 +234,8 @@ void	look_up(t_vars *var);
 // SRCS_UTILS.C
 void	cp_char_array(char ***dest, char **src);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void	arrays_size_check(t_fd_read *fdres, t_vars *var,
+			char ***ar1, char ***ar2);
 
 /*UTILS ----------------------------------------------------------------------*/
 /* ************************************************************************** */

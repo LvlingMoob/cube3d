@@ -15,16 +15,11 @@
 static int	digit_value_checker(char *values, int i, int j)
 {
 	int		ret;
-	int		coma;
 
-	coma = 0;
 	while (values[i])
 	{
 		if (values[i] == ',')
-		{
 			j = 0;
-			coma++;
-		}
 		else
 		{
 			ret = digit_conditions_check(values, i, j);
@@ -34,8 +29,6 @@ static int	digit_value_checker(char *values, int i, int j)
 		i++;
 		j++;
 	}
-	if (coma > 2)
-		return (-1);
 	return (1);
 }
 
@@ -49,6 +42,8 @@ static int	final_check_walls(t_fd_read *fdres, char *line, int l, int to_value)
 	i = init_i(line, 2);
 	strstart = i;
 	i += start_line_checker(&line[i], &j, l);
+	if (i < 0)
+		return (0);
 	if (!end_line_checker(&line[i], l))
 		return (0);
 	tmp = ft_strdup(&line[strstart + j]);
@@ -85,8 +80,6 @@ static int	floor_ceiling_digits_value_verif(t_fd_read *fdres,
 			printf("l %d : error, 4 digits number\n", l + 1);
 		else if (ret == -3)
 			printf("l %d : error, negative value detected\n", l + 1);
-		else if (ret < 0)
-			printf("l %d : error 3 numbers expected\n", l + 1);
 		return (0);
 	}
 	return (1);
@@ -102,6 +95,8 @@ static int	final_check_floor_ceiling(t_fd_read *fdres, char *line,
 	i = init_i(line, 1);
 	strstart = i;
 	i += start_line_checker(&line[i], &j, l);
+	if (i < 0)
+		return (0);
 	if (!end_line_checker(&line[i], l))
 		return (0);
 	if (to_value == F)
