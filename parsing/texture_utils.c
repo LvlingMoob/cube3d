@@ -12,6 +12,22 @@
 
 #include "cube.h"
 
+int	digit_value_end_line_checker(char *line)
+{
+	int	i;
+
+	i = 0;
+	if (!line[0])
+		return (0);
+	while (line[i])
+	{
+		if (!(line[i] > 0 && line[i] <= 32))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	digit_conditions_check(char *values, int i, int j)
 {
 	if (values[i] == '-' && values[i + 1]
@@ -49,7 +65,7 @@ int	start_line_checker(char *line, int *j, int l)
 		i++;
 	if (!line[i])
 	{
-		printf("l %d : %s : error, empty lines\n", l, line);
+		printf("l %d : %s : error, empty lines\n", l + 1, line);
 		return (INT_MIN);
 	}
 	*j = i;

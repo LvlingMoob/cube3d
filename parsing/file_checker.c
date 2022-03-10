@@ -62,7 +62,8 @@ void	file_checker(t_fd_read *fdres, char **file_content, int i, int l)
 		if (!content[i][j])
 			;
 		else if (!(ft_strncmp(fdres->values[l], &content[i][j],
-				ft_strlen(fdres->values[l]))))
+				ft_strlen(fdres->values[l])))
+			&& texture_path_value_checker(&content[i][j]))
 		{
 			if (!fill_texture_address_fdres(fdres, content[i], l, i))
 				err_on_texture_exit(fdres, &content);

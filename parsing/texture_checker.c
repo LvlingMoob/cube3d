@@ -15,11 +15,18 @@
 static int	digit_value_checker(char *values, int i, int j)
 {
 	int		ret;
+	int		coma;
 
+	coma = 0;
 	while (values[i])
 	{
 		if (values[i] == ',')
+		{
+			coma++;
 			j = 0;
+			if (coma == 2 && !digit_value_end_line_checker(&values[i + 1]))
+				return (-1);
+		}
 		else
 		{
 			ret = digit_conditions_check(values, i, j);
@@ -76,6 +83,8 @@ static int	floor_ceiling_digits_value_verif(t_fd_read *fdres,
 	{
 		if (ret == 0)
 			printf("l %d : error, only numbers expected\n", l + 1);
+		else if (ret == -1)
+			printf("l %d : error, 3 numbers expected\n", l + 1);
 		else if (ret == -2)
 			printf("l %d : error, 4 digits number\n", l + 1);
 		else if (ret == -3)

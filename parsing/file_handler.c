@@ -12,6 +12,21 @@
 
 #include "cube.h"
 
+int	texture_path_value_checker(char *line)
+{
+	int	i;
+
+	i = 0;
+	if ((line[0] == 'F' || line[0] == 'C')
+		&& (line[1] && line[1] > 0 && line[1] <= 32))
+		return (1);
+	while (!(line[i] > 0 && line[i] <= 32))
+		i++;
+	if (i != 2)
+		return (0);
+	return (1);
+}
+
 static void	content_rewrite(char **file_content)
 {
 	int	i;
